@@ -64,7 +64,22 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 #reportCard .r-celebrate.win{background:#eaf7ef;border-color:#b9e4c9;color:#267c57;}
 #reportCard .r-celebrate[hidden]{display:none!important;}
 @media(max-height:680px){#reportCard{grid-template-rows:7% 29% 19% 45%}#reportCard.long-notes{grid-template-rows:6% 23% 19% 52%}}
-</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.5.1</span></header>
+
+/* v1.5.2 — match the original daily card; keep space between notes */
+#reportCard>.r-info{grid-template-rows:minmax(0,43%) minmax(0,32%) minmax(0,25%);padding-top:clamp(12px,1.8vh,17px)}
+#reportCard.long-notes>.r-info{grid-template-rows:minmax(0,48%) minmax(0,32%) minmax(0,20%)}
+#reportCard .r-block{padding:3px 0 9px;overflow:hidden}
+#reportCard .r-block:nth-child(2){padding-top:clamp(9px,1.8vh,16px)}
+#reportCard .r-body{white-space:pre-wrap;overflow-wrap:anywhere}
+#reportCard .r-celebrate{border-radius:14px;padding:clamp(8px,1.35vh,12px) 8px;gap:8px}
+#reportCard .r-celebrate .r-trophy{flex-shrink:0}
+#reportCard .r-celebrate strong{font-size:clamp(11px,1.65vh,15px)}
+#reportCard .r-celebrate small{font-size:clamp(10px,1.4vh,12px)}
+#reportCard .r-confetti{flex-shrink:0}
+#reportCard .r-change{letter-spacing:-.075em;white-space:nowrap}
+#reportCard .r-metric b.hidevalue{filter:none!important;color:transparent!important;position:relative}
+#reportCard .r-metric b.hidevalue::after{content:'••••';color:#8796aa;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;letter-spacing:3px;filter:none}
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.5.2.2</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重、运动和今天的心情</div><label>DATE</label><input id="entryDate" type="date"><label>WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><label>MOOD & NOTES</label><textarea id="entryMood" placeholder="今天有什么想说的？"></textarea><button class="primary full" id="saveEntry">保存并生成卡片 →</button></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div><span class="pill" id="recordCount">0 records</span></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><svg class="chart" id="chart" viewBox="0 0 350 220"></svg><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div class="panel"><div class="sectiontitle" id="phaseHeading">Current Phase</div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div></section>
 <section id="history" class="page"><div class="panel"><div class="sectiontitle">History</div><div class="sub">点击编辑可修改历史记录，保存后自动重新计算趋势</div><div id="historyList"></div></div></section>
@@ -129,41 +144,42 @@ function renderPhase(){const s=data.settings,a=sorted(),start=s.phaseStart,phase
 function fillSettings(){const s=data.settings;$('height').value=s.height||170;$('phaseName').value=s.phaseName||'';$('phaseStart').value=s.phaseStart||'';$('phaseEnd').value=s.phaseEnd||'';$('phaseGoal').value=s.phaseGoal??'';$('recordLowStart').value=s.recordLowStart||''}fillSettings();$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:Number($('phaseGoal').value),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value};if(save()){render();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=()=>download(new Blob([JSON.stringify({app:'BodyLog',version:'1.4',exportedAt:new Date().toISOString(),...data},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{}};if(save()){fillSettings();loadEntry(TODAY);render();toast('历史数据已导入')}}catch(err){alert('导入失败：'+err.message)}finally{e.target.value=''}};
 function rounded(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}function lines(ctx,str,x,y,maxWidth,lineHeight,maxLines){let parts=[],line='';for(const ch of String(str)){if(ctx.measureText(line+ch).width>maxWidth&&line){parts.push(line);line=ch}else line+=ch}if(line)parts.push(line);parts.slice(0,maxLines).forEach((s,i)=>ctx.fillText(s,x,y+i*lineHeight))}
 function makeReportImage(){
- // Draw from the actual rendered card geometry, rather than maintaining a second layout.
+ // Export the live card using the same geometry, colors, typography and spacing.
  const card=$('reportCard'),box=card.getBoundingClientRect(),scale=3;
  const c=document.createElement('canvas');c.width=Math.round(box.width*scale);c.height=Math.round(box.height*scale);
  const ctx=c.getContext('2d');ctx.scale(scale,scale);
  const W=box.width,H=box.height;
  function rect(el){const r=el.getBoundingClientRect();return {x:r.left-box.left,y:r.top-box.top,w:r.width,h:r.height}}
- function bg(el,color,radius){const a=rect(el);ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(a.x,a.y,a.w,a.h,radius);ctx.fill()}
- function color(el){return getComputedStyle(el).color}
+ function roundPath(r,rad){ctx.beginPath();ctx.roundRect(r.x,r.y,r.w,r.h,rad)}
+ function bg(el,color,radius,border){const a=rect(el);roundPath(a,radius);ctx.fillStyle=color;ctx.fill();if(border){ctx.strokeStyle=border;ctx.lineWidth=1;ctx.stroke()}}
  function font(el){const s=getComputedStyle(el);return `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`}
  function drawText(el,wrap=false){
   const r=rect(el),style=getComputedStyle(el),txt=el.textContent||'';
   if(!txt.trim())return;
-  ctx.fillStyle=style.color;ctx.font=font(el);ctx.textBaseline='top';
+  ctx.save();ctx.fillStyle=style.color;ctx.font=font(el);ctx.textBaseline='top';
   const align=style.textAlign==='center'?'center':style.textAlign==='right'?'right':'left';ctx.textAlign=align;
   const xx=align==='center'?r.x+r.w/2:align==='right'?r.x+r.w:r.x;
-  const lineHeight=parseFloat(style.lineHeight)||parseFloat(style.fontSize)*1.35;
+  const fontSize=parseFloat(style.fontSize),lineHeight=parseFloat(style.lineHeight)||fontSize*1.35;
   const maxLines=wrap?Math.max(1,Math.floor((r.h+2)/lineHeight)):1;
   let rows=[];
   if(wrap){for(const para of txt.split('\n')){
-    if(!para){rows.push('');continue}
-    let line='';for(const ch of para){if(ctx.measureText(line+ch).width>r.w&&line){rows.push(line);line=ch}else line+=ch}rows.push(line);
+   if(!para){rows.push('');continue}
+   let line='';for(const ch of para){if(ctx.measureText(line+ch).width>r.w&&line){rows.push(line);line=ch}else line+=ch}rows.push(line);
   }}else rows=[txt];
-  rows.slice(0,maxLines).forEach((line,i)=>ctx.fillText(line,xx,r.y+i*lineHeight));
+  const extra=wrap?0:Math.max(0,(r.h-lineHeight)/2);
+  rows.slice(0,maxLines).forEach((line,i)=>ctx.fillText(line,xx,r.y+extra+i*lineHeight,wrap?undefined:r.w));
+  ctx.restore();
  }
  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
- // Elements below share the same rectangles, fonts, colors and spacing as the live card.
- const textIds=['rDate','rChange','rCompare','rWeight','rBMI','rPhaseName','rPhasePct','rWorkout','rMood','rEmoji','rBannerTitle','rLowDetail'];
  for(const metric of card.querySelectorAll('.r-metric'))bg(metric,'#f5f7fb',15);
- const banner=$('rCelebrate');const s=getComputedStyle(banner);
- bg(banner,s.backgroundColor,14);
- ctx.strokeStyle=s.borderColor;ctx.lineWidth=1;const br=rect(banner);ctx.strokeRect(br.x+.5,br.y+.5,br.w-1,br.h-1);
- for(const el of card.querySelectorAll('.r-top b,.r-desc,.r-metric .r-label'))drawText(el);
- for(const id of textIds){const el=$(id);if(el.closest('.hidevalue'))continue;
-  if((id==='rWeight'&&$('hideWeight').checked)||(id==='rBMI'&&$('hideBMI').checked)){
-   const r=rect(el);ctx.fillStyle='#aeb8c7';ctx.fillRect(r.x+r.w*.2,r.y+r.h*.4,r.w*.6,7);continue;
+ const banner=$('rCelebrate'),bs=getComputedStyle(banner);
+ bg(banner,bs.backgroundColor,14,bs.borderColor);
+ // Labels, including the workout and mood headings, are required in the saved image.
+ for(const el of card.querySelectorAll('.r-top b,.r-desc,.r-metric .r-label,.r-block .r-label'))drawText(el);
+ for(const id of ['rDate','rChange','rCompare','rWeight','rBMI','rPhaseName','rPhasePct','rWorkout','rMood','rEmoji','rBannerTitle','rLowDetail']){
+  const el=$(id);
+  if(id==='rWeight'&&$('hideWeight').checked||id==='rBMI'&&$('hideBMI').checked){
+   const r=rect(el);ctx.save();ctx.fillStyle='#8796aa';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('••••',r.x+r.w/2,r.y+r.h/2);ctx.restore();continue;
   }
   drawText(el,id==='rWorkout'||id==='rMood'||id==='rLowDetail');
  }
