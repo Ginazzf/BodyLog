@@ -190,7 +190,32 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 .historical-phase .phase-remove{font-size:11px;color:#b66b72;background:none;padding:4px 6px}
 #historicalPhaseForm{margin-top:15px;border-top:1px solid #edf1f7;padding-top:5px}
 #historicalPhaseForm[hidden]{display:none}
-#goalRemain,.historical-phase .phase-metrics .metric:nth-child(2) strong{font-size:17px;letter-spacing:-.02em;white-space:nowrap}</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.6.4</span></header>
+#goalRemain,.historical-phase .phase-metrics .metric:nth-child(2) strong{font-size:17px;letter-spacing:-.02em;white-space:nowrap}
+/* v1.6.5: let notes determine their own height, with guaranteed breathing
+   room before the celebratory banner, without enlarging the report card. */
+#reportCard>.r-info,
+#reportCard.long-notes>.r-info{
+ display:flex!important;flex-direction:column!important;
+ grid-template-rows:none!important;gap:clamp(12px,2.2vh,22px)!important;
+ padding-top:clamp(10px,1.6vh,16px)!important;min-height:0!important;
+ overflow:hidden!important;
+}
+#reportCard .r-info>.r-block,
+#reportCard.long-notes .r-info>.r-block{
+ flex:0 1 auto!important;min-height:0!important;
+ padding:0!important;overflow:hidden!important;
+ max-height:38%!important;
+}
+#reportCard .r-info>.r-block:nth-child(2){padding-top:0!important}
+#reportCard .r-info .r-body{display:block!important;white-space:pre-wrap!important;
+ -webkit-line-clamp:unset!important;line-clamp:unset!important;
+ overflow-y:auto!important;max-height:calc(100% - 20px)!important;
+ font-size:clamp(11px,1.7vh,14px)!important;line-height:1.4!important;}
+#reportCard .r-info>.r-celebrate{
+ flex:0 0 auto!important;margin-top:auto!important;margin-bottom:0!important;
+ min-height:clamp(55px,9vh,85px)!important;max-height:32%!important;
+}
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.6.5</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重、运动和今天的心情</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><label>MOOD & NOTES</label><textarea id="entryMood" placeholder="今天有什么想说的？"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><svg class="chart" id="chart" viewBox="0 0 350 220"></svg><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
@@ -212,7 +237,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 <nav class="tabs"><button data-page="home" class="active"><span>⌂</span>记录</button><button data-page="trends"><span>⌁</span>趋势</button><button data-page="history"><span>▦</span>历史</button><button data-page="gallery"><span>▧</span>图集</button><button data-page="settings"><span>⚙</span>设置</button></nav><div class="toast" id="toast"></div>
 <div id="updateModal" role="dialog" aria-modal="true" aria-labelledby="updateTitle"><div class="update-box"><div class="update-icon">↻</div><div id="updateTitle" class="sectiontitle">发现新版本</div><p>BodyLog 已有新版本，点击更新即可刷新应用。你的本地记录和照片会保留。</p><div class="update-actions"><button id="updateLater" class="outline" type="button">稍后</button><button id="updateNow" class="primary" type="button">立即更新</button></div></div></div><div id="galleryViewer"><div class="viewer-bar"><span id="viewerDate"></span><button id="viewerClose" type="button">关闭 ✕</button></div><img id="viewerImg" alt="照片预览"></div><div id="report"><div class="reportbar"><button class="outline" id="back">← 返回编辑</button><span class="sub">DAILY REPORT</span></div><div id="reportCard"><div class="r-top"><b>BODYLOG.</b><span id="rDate"></span></div><div class="r-main"><div class="r-desc">DAY-OVER-DAY CHANGE</div><div class="r-change" id="rChange">—</div><div class="r-desc" id="rCompare">Compared with yesterday</div></div><div class="r-metrics"><div class="r-metric"><div class="r-label">WEIGHT</div><b id="rWeight">—</b></div><div class="r-metric"><div class="r-label">BMI</div><b id="rBMI">—</b></div><div class="r-metric"><div class="r-label" id="rPhaseName">CURRENT PHASE</div><b id="rPhasePct">—</b></div></div><div class="r-info"><div class="r-block"><div class="r-label">YESTERDAY'S WORKOUT</div><div class="r-body" id="rWorkout"></div></div><div class="r-block"><div class="r-label">TODAY'S MOOD</div><div class="r-body" id="rMood"></div></div><div class="r-celebrate" id="rCelebrate"><span class="r-trophy" id="rEmoji">🏆</span><div><strong id="rBannerTitle">NEW PERSONAL LOW!</strong><small id="rLowDetail"></small></div><span class="r-confetti">✦ ✧ ✦</span></div></div></div><div class="reportopts"><label><input type="checkbox" id="hideWeight"> 隐藏当前体重</label><label><input type="checkbox" id="hideBMI"> 隐藏 BMI</label></div><div class="reportactions"><button class="outline" id="shareReport">查看图片 · 长按保存</button><button class="primary" id="closeReport">完成</button></div></div><div id="imagePreview" role="dialog" aria-modal="true" aria-label="日报图片预览"><div class="preview-head"><span>长按下方图片，选择“存储到照片”</span><button id="closePreview" class="outline">关闭 ✕</button></div><img id="previewImg" alt="BodyLog 日报图片，可长按保存到照片"></div>
 <script>
-'use strict';const $=id=>document.getElementById(id),KEY='bodylog-light-v12',OLD='bodylog-v1';const dateLocal=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;const shift=(s,n)=>{let [y,m,d]=s.split('-').map(Number);return dateLocal(new Date(y,m-1,d+n))};const TODAY=dateLocal();const fresh=()=>({weights:[],workouts:[],settings:{height:170,phaseName:'',phaseStart:'',phaseEnd:'',phaseGoal:null,recordLowStart:'',weightUnit:'kg'},quotes:{},historicalPhases:[]});let data;try{data=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(OLD)||'null')}catch{}if(!data||!Array.isArray(data.weights)||!Array.isArray(data.workouts))data=fresh();data.settings={...fresh().settings,...(data.settings||{})};data.quotes??={};if(!Array.isArray(data.historicalPhases))data.historicalPhases=[];
+'use strict';const $=id=>document.getElementById(id),KEY='bodylog-light-v12',OLD='bodylog-v1';const dateLocal=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;const shift=(s,n)=>{let [y,m,d]=s.split('-').map(Number);return dateLocal(new Date(y,m-1,d+n))};const TODAY=dateLocal();const fresh=()=>({weights:[],workouts:[],settings:{height:170,phaseName:'',phaseStart:'',phaseEnd:'',phaseGoal:null,recordLowStart:'',weightUnit:'kg'},quotes:{},historicalPhases:[],entries:{}});let data;try{data=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(OLD)||'null')}catch{}if(!data||!Array.isArray(data.weights)||!Array.isArray(data.workouts))data=fresh();data.settings={...fresh().settings,...(data.settings||{})};data.quotes??={};if(!Array.isArray(data.historicalPhases))data.historicalPhases=[];if(!data.entries||typeof data.entries!=='object'||Array.isArray(data.entries))data.entries={};
 // All persisted weight values (including phaseGoal) stay in kg for backward compatibility.
 const LB_PER_KG=2.20462262185;
 const unit=()=>data.settings.weightUnit==='lb'?'lb':'kg';
@@ -228,7 +253,20 @@ function updateUnitLabels(){
  $('weightUnit').value=unit();
 }
 let currentReport=TODAY,range='30';const validDate=s=>typeof s==='string'&&/^\d{4}-\d\d-\d\d$/.test(s)&&!isNaN(new Date(s+'T12:00:00').getTime());const sorted=()=>[...data.weights].sort((a,b)=>a.date.localeCompare(b.date));const f=n=>Number(n).toFixed(1);const signed=n=>(n>0?'+':'')+f(n);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let timer;function toast(s){$('toast').textContent=s;$('toast').style.display='block';clearTimeout(timer);timer=setTimeout(()=>$('toast').style.display='none',2300)}function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch{alert('保存失败，请先导出备份并检查设备存储空间。');return false}}function navigate(page){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page));document.querySelectorAll('.tabs button').forEach(e=>e.classList.toggle('active',e.dataset.page===page));window.scrollTo(0,0);render();if(page==='gallery')renderGallery()}document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>navigate(b.dataset.page));
-function loadEntry(date){const w=data.weights.find(x=>x.date===date);$('entryDate').value=date;$('entryWeight').value=w?weightText(w.weight):'';$('entryWorkout').value=w?.workout??data.workouts.filter(x=>x.date===date).map(x=>[x.type,x.details,x.minutes?x.minutes+' min':''].filter(Boolean).join(' · ')).join('\n');$('entryMood').value=w?.note??''}$('entryDate').onchange=()=>loadEntry($('entryDate').value);function quoteFor(date,delta){if(data.quotes[date])return data.quotes[date];const q=delta===null?'新的记录，新的起点。':delta<-.05?'昨天的坚持，今天看到了变化。':delta>.05?'体重秤今天有点戏，先看长期趋势。':'体重没动，努力可没有停。';data.quotes[date]=q;return q}
+function dailyNotes(date){
+ const weighted=data.weights.find(x=>x.date===date);
+ const other=data.entries[date]||{};
+ return {workout:weighted?.workout??other.workout??data.workouts.filter(x=>x.date===date).map(x=>[x.type,x.details,x.minutes?x.minutes+' min':''].filter(Boolean).join(' · ')).join('\n'),
+ note:weighted?.note??other.note??''};
+}
+function loadEntry(date){
+ const w=data.weights.find(x=>x.date===date),notes=dailyNotes(date);
+ $('entryDate').value=date;
+ $('entryWeight').value=w?weightText(w.weight):'';
+ $('entryWorkout').value=notes.workout;
+ $('entryMood').value=notes.note;
+}
+$('entryDate').onchange=()=>loadEntry($('entryDate').value);function quoteFor(date,delta){if(data.quotes[date])return data.quotes[date];const q=delta===null?'新的记录，新的起点。':delta<-.05?'昨天的坚持，今天看到了变化。':delta>.05?'体重秤今天有点戏，先看长期趋势。':'体重没动，努力可没有停。';data.quotes[date]=q;return q}
 function getPhaseProgress(date,weight){
  const s=data.settings,goal=Number(s.phaseGoal),start=s.phaseStart;
  if(!start||!s.phaseGoal||!Number.isFinite(goal)||date<start)return {pct:null,met:false};
@@ -245,31 +283,33 @@ function getBanner(date,weight,delta,isLow,phase){
  if(phase.met&&s.phaseEnd&&date<=s.phaseEnd)return {type:'win',emoji:'🏆',title:'GOAL REACHED EARLY!',detail:'提前完成 '+(s.phaseName||'当前阶段')+' 的目标！'};
  if(isLow)return {type:'win',emoji:'🏆',title:'NEW PERSONAL LOW!',detail:'刷新历史最低体重！'};
  if(delta===null)return {type:'mild',emoji:'🌱',title:'新的开始',detail:'记录下来，慢慢来。'};
- if(delta<-.000001)return {type:'win',emoji:'🎉',title:'又轻了一点！',detail:'比昨天少 '+weightWithUnit(-delta)+'，继续保持。'};
+ if(delta<-.000001)return {type:'win',emoji:'🎉',title:'又轻了一点！',detail:'比上次记录少 '+weightWithUnit(-delta)+'，继续保持。'};
  if(delta<=.3000001)return {type:'mild',emoji:'💪',title:'正常波动，稳住！',detail:'每天浮动一点很正常，继续练。'};
  if(delta<.8-0.0000001)return {type:'cheeky',emoji:'😏',title:'昨天吃得挺好吧？',detail:'涨了 '+weightWithUnit(delta)+'，今天正常吃，别慌。'};
- return {type:'wake',emoji:'😤',title:'你怕不是疯了吧！',detail:'比昨天多 '+weightWithUnit(delta)+'，先看看是不是水分波动。'};
+ return {type:'wake',emoji:'😤',title:'你怕不是疯了吧！',detail:'比上次记录多 '+weightWithUnit(delta)+'，先看看是不是水分波动。'};
 }
 function showReport(date){
- const w=data.weights.find(x=>x.date===date);if(!w)return;
- currentReport=date;const prev=data.weights.find(x=>x.date===shift(date,-1));
- const delta=prev?Number(w.weight)-Number(prev.weight):null;
+ const w=data.weights.find(x=>x.date===date),notes=dailyNotes(date);
+ if(!w&&!notes.workout&&!notes.note)return;
+ currentReport=date;
+ const prev=sorted().filter(x=>x.date<date&&Number.isFinite(Number(x.weight))).at(-1);
+ const delta=w&&prev?Number(w.weight)-Number(prev.weight):null;
  $('rDate').textContent=date;$('rChange').textContent=delta===null?'—':signedWeight(delta)+' '+unit();
  $('rChange').style.color=delta===null?'#24344c':delta<-.05?'#418a77':delta>.05?'#c28a4c':'#5376a8';
- $('rCompare').textContent=delta===null?'No weight entry yesterday':'Compared with yesterday';
- $('rWeight').textContent=weightWithUnit(w.weight);const h=Number(data.settings.height)||170;
- $('rBMI').textContent=f(w.weight/(h/100)**2);
- const phase=getPhaseProgress(date,w.weight);
+ $('rCompare').textContent=!w?'No weight recorded today':!prev?'No previous weight entry':prev.date===shift(date,-1)?'Compared with yesterday':'Compared with '+prev.date;
+ $('rWeight').textContent=w?weightWithUnit(w.weight):'—';const h=Number(data.settings.height)||170;
+ $('rBMI').textContent=w?f(w.weight/(h/100)**2):'—';
+ const phase=w?getPhaseProgress(date,w.weight):{pct:null,met:false};
  $('rPhaseName').textContent=data.settings.phaseName||'CURRENT PHASE';
  $('rPhasePct').textContent=phase.pct===null?'—':Math.round(phase.pct)+'%';
  const yesterday=shift(date,-1);
- const yw=data.weights.find(x=>x.date===yesterday)?.workout||data.workouts.filter(x=>x.date===yesterday).map(x=>[x.type,x.details].filter(Boolean).join(' · ')).join('\n');
- $('rWorkout').textContent=yw||'昨天没有运动记录';$('rMood').textContent=w.note||'今天没有写心情';
+ const yw=dailyNotes(yesterday).workout;
+ $('rWorkout').textContent=yw||'昨天没有运动记录';$('rMood').textContent=notes.note||'今天没有写心情';
  const start=data.settings.recordLowStart||'0000-01-01';
  const earlier=data.weights.filter(x=>x.date>=start&&x.date<date&&Number.isFinite(Number(x.weight)));
  const lowest=earlier.length?Math.min(...earlier.map(x=>Number(x.weight))):null;
- const isLow=date>=start&&lowest!==null&&Number(w.weight)<lowest-0.000001;
- const banner=getBanner(date,w.weight,delta,isLow,phase);
+ const isLow=!!w&&date>=start&&lowest!==null&&Number(w.weight)<lowest-0.000001;
+ const banner=w?getBanner(date,w.weight,delta,isLow,phase):{type:'mild',emoji:'📝',title:'TODAY IS RECORDED!',detail:'训练和心情已保存。'};
  $('rEmoji').textContent=banner.emoji;$('rBannerTitle').textContent=banner.title;
  $('rLowDetail').textContent=isLow&&banner.title==='NEW PERSONAL LOW!'?'比此前最低纪录低 '+weightWithUnit(lowest-Number(w.weight)):banner.detail;
  $('rCelebrate').className='r-celebrate '+banner.type;
@@ -277,14 +317,34 @@ function showReport(date){
  $('reportCard').classList.toggle('long-notes',textLines($('rWorkout').textContent)>3||textLines($('rMood').textContent)>3);
  $('hideWeight').checked=false;$('hideBMI').checked=false;applyHide();save();$('report').classList.add('active');
 }
-function applyHide(){$('rWeight').classList.toggle('hidevalue',$('hideWeight').checked);$('rBMI').classList.toggle('hidevalue',$('hideBMI').checked)}$('hideWeight').onchange=applyHide;$('hideBMI').onchange=applyHide;$('back').onclick=$('closeReport').onclick=()=>$('report').classList.remove('active');function saveDailyEntry(generateCard){const date=$('entryDate').value,weight=storeWeight(Number($('entryWeight').value.replace(',','.')));if(!validDate(date)||!$('entryWeight').value||!Number.isFinite(weight)||weight<20||weight>400)return toast('请输入有效日期和体重');const entry={date,weight,workout:$('entryWorkout').value.trim(),note:$('entryMood').value.trim()};const i=data.weights.findIndex(x=>x.date===date);if(i>=0)data.weights[i]={...data.weights[i],...entry};else data.weights.push(entry);delete data.quotes[date];if(save()){render();if(generateCard)showReport(date);else toast('记录已保存')}};$('saveOnly').onclick=()=>saveDailyEntry(false);$('saveEntry').onclick=()=>saveDailyEntry(true);
+function applyHide(){$('rWeight').classList.toggle('hidevalue',$('hideWeight').checked);$('rBMI').classList.toggle('hidevalue',$('hideBMI').checked)}$('hideWeight').onchange=applyHide;$('hideBMI').onchange=applyHide;$('back').onclick=$('closeReport').onclick=()=>$('report').classList.remove('active');function saveDailyEntry(generateCard){
+ const date=$('entryDate').value,raw=$('entryWeight').value.trim().replace(',','.'),
+ workout=$('entryWorkout').value.trim(),note=$('entryMood').value.trim();
+ if(!validDate(date))return toast('请选择有效日期');
+ if(!raw&&!workout&&!note)return toast('请至少填写体重、训练或心情中的一项');
+ const weight=raw?storeWeight(Number(raw)):null;
+ if(raw&&(!Number.isFinite(weight)||weight<20||weight>400))return toast('请输入有效体重');
+ const i=data.weights.findIndex(x=>x.date===date);
+ if(raw){
+  const entry={date,weight,workout,note};
+  if(i>=0)data.weights[i]={...data.weights[i],...entry};else data.weights.push(entry);
+  delete data.entries[date];
+ }else{
+  if(i>=0)data.weights.splice(i,1);
+  data.entries[date]={workout,note};
+ }
+ delete data.quotes[date];
+ if(save()){render();if(generateCard)showReport(date);else toast('记录已保存')}
+};$('saveOnly').onclick=()=>saveDailyEntry(false);$('saveEntry').onclick=()=>saveDailyEntry(true);
 function render(){renderChart();renderHistory();renderPhase();renderHistoricalPhases()}let historyMode="weight";
 $("historyWeightTab").onclick=()=>{historyMode="weight";renderHistory()};
 $("historyWorkoutTab").onclick=()=>{historyMode="workout";renderHistory()};
 function renderHistory(){const chronological=sorted();const a=chronological.slice().reverse();const previousWeightByDate=new Map();chronological.forEach((w,i)=>{if(i>0)previousWeightByDate.set(w.date,Number(chronological[i-1].weight))});const editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4Z"/></svg>';const deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg>';$('historyWeightTab').classList.toggle('selected',historyMode==='weight');$('historyWorkoutTab').classList.toggle('selected',historyMode==='workout');$('historyWeightTab').setAttribute('aria-selected',String(historyMode==='weight'));$('historyWorkoutTab').setAttribute('aria-selected',String(historyMode==='workout'));
-if(historyMode==='workout'){const workouts=a.filter(w=>typeof w.workout==='string'&&w.workout.trim());$('historyList').innerHTML=workouts.length?workouts.map(w=>`<div class="workout-entry"><div class="workout-head"><time class="workout-date" datetime="${esc(w.date)}">${esc(w.date)}</time><div class="history-right"><button type="button" class="history-action" data-edit="${esc(w.date)}" aria-label="编辑 ${esc(w.date)} 的运动记录" title="编辑">${editIcon}</button><button type="button" class="history-action delete" data-delete="${esc(w.date)}" aria-label="删除 ${esc(w.date)} 的运动记录" title="删除运动记录">${deleteIcon}</button></div></div><div class="workout-content">${esc(w.workout)}</div></div>`).join(''):'<div class="empty">还没有运动记录</div>';return;}
+if(historyMode==='workout'){const workouts=[...a.map(w=>({date:w.date,workout:dailyNotes(w.date).workout})),
+ ...Object.keys(data.entries).filter(date=>!a.some(w=>w.date===date)).map(date=>({date,workout:dailyNotes(date).workout}))]
+ .filter(w=>typeof w.workout==='string'&&w.workout.trim()).sort((x,y)=>y.date.localeCompare(x.date));$('historyList').innerHTML=workouts.length?workouts.map(w=>`<div class="workout-entry"><div class="workout-head"><time class="workout-date" datetime="${esc(w.date)}">${esc(w.date)}</time><div class="history-right"><button type="button" class="history-action" data-edit="${esc(w.date)}" aria-label="编辑 ${esc(w.date)} 的运动记录" title="编辑">${editIcon}</button><button type="button" class="history-action delete" data-delete="${esc(w.date)}" aria-label="删除 ${esc(w.date)} 的运动记录" title="删除运动记录">${deleteIcon}</button></div></div><div class="workout-content">${esc(w.workout)}</div></div>`).join(''):'<div class="empty">还没有运动记录</div>';return;}
 $('historyList').innerHTML=a.length?a.map(w=>`<div class="history-item"><div class="history-left">${previousWeightByDate.has(w.date)&&Math.abs(Number(w.weight)-previousWeightByDate.get(w.date))>0.00001?`<span class="weight-trend ${Number(w.weight)<previousWeightByDate.get(w.date)?"down":"up"}" title="${Number(w.weight)<previousWeightByDate.get(w.date)?"较前次下降":"较前次上升"}" aria-label="${Number(w.weight)<previousWeightByDate.get(w.date)?"较前次下降":"较前次上升"}">${Number(w.weight)<previousWeightByDate.get(w.date)?"↓":"↑"}</span>`:`<span class="weight-trend neutral" aria-label="${previousWeightByDate.has(w.date)?"体重无变化":"首次记录"}" title="${previousWeightByDate.has(w.date)?"体重无变化":"首次记录"}">${previousWeightByDate.has(w.date)?"−":""}</span>`}<span class="history-weight">${weightWithUnit(w.weight)}</span>${w.workout&&w.workout.trim()?'<span class="history-star" aria-label="有运动记录" title="有运动记录">★</span>':''}</div><div class="history-right"><time class="history-date" datetime="${esc(w.date)}">${esc(w.date)}</time><button type="button" class="history-action" data-edit="${esc(w.date)}" aria-label="编辑 ${esc(w.date)} 的记录" title="编辑">${editIcon}</button><button type="button" class="history-action delete" data-delete="${esc(w.date)}" aria-label="删除 ${esc(w.date)} 的记录" title="删除">${deleteIcon}</button></div></div>`).join(''):'<div class="empty">还没有体重记录</div>';}
-$('historyList').onclick=e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){loadEntry(edit.dataset.edit);navigate('home')}if(del){const date=del.dataset.delete;if(historyMode==='workout'){if(confirm('确定删除 '+date+' 的运动记录？体重和心情记录将保留。')){const record=data.weights.find(w=>w.date===date);if(record){record.workout='';save();render()}}}else if(confirm('确定删除 '+date+' 的记录？')){data.weights=data.weights.filter(w=>w.date!==date);delete data.quotes[date];save();render()}}};
+$('historyList').onclick=e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){loadEntry(edit.dataset.edit);navigate('home')}if(del){const date=del.dataset.delete;if(historyMode==='workout'){if(confirm('确定删除 '+date+' 的运动记录？体重和心情记录将保留。')){const record=data.weights.find(w=>w.date===date);if(record){record.workout=''}else if(data.entries[date]){data.entries[date].workout=''}save();render()}}else if(confirm('确定删除 '+date+' 的记录？')){data.weights=data.weights.filter(w=>w.date!==date);delete data.quotes[date];save();render()}}};
 function renderChart(){let a=sorted();const from=$('fromDate').value,to=$('toDate').value;if(from||to)a=a.filter(w=>(!from||w.date>=from)&&(!to||w.date<=to));else if(range==='phase')a=a.filter(w=>!data.settings.phaseStart||w.date>=data.settings.phaseStart);else if(range!=='all')a=a.filter(w=>w.date>=shift(TODAY,-Number(range)+1)&&w.date<=TODAY);$('periodRecords').textContent=a.length+' days';$('periodChange').textContent=a.length>=2?signedWeight(a.at(-1).weight-a[0].weight)+' '+unit():'—';const svg=$('chart');if(!a.length){svg.innerHTML='<text x="175" y="105" text-anchor="middle" fill="#98a6b9" font-size="13">此时间段没有记录</text>';return}const vals=a.map(w=>Number(w.weight)),min=Math.min(...vals)-.5,max=Math.max(...vals)+.5,span=max-min;const x=i=>a.length===1?175:42+i*292/(a.length-1),y=w=>178-(w-min)/span*140;let s='';for(let i=0;i<4;i++){let yy=38+i*46.7;s+=`<line x1="42" x2="334" y1="${yy}" y2="${yy}" stroke="#e6ebf4" stroke-dasharray="4 4"/><text x="3" y="${yy+4}" font-size="10" fill="#91a0b5">${weightText(max-i*span/3)}</text>`}s+=`<polyline points="${a.map((w,i)=>x(i)+','+y(w.weight)).join(' ')}" stroke="#5d82bd" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;a.forEach((w,i)=>s+=`<circle cx="${x(i)}" cy="${y(w.weight)}" r="${a.length>80?1.4:3}" fill="#5d82bd"><title>${esc(w.date)}: ${weightWithUnit(w.weight)}</title></circle>`);s+=`<text x="42" y="208" font-size="11" fill="#91a0b5">${a[0].date.slice(5)}</text><text x="334" y="208" text-anchor="end" font-size="11" fill="#91a0b5">${a.at(-1).date.slice(5)}</text>`;svg.innerHTML=s}document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{range=b.dataset.range;$('fromDate').value='';$('toDate').value='';document.querySelectorAll('[data-range]').forEach(x=>x.classList.toggle('active',x===b));renderChart()});$('fromDate').onchange=$('toDate').onchange=renderChart;
 function formatGoalDistance(first,last,goal){
  if(!first||!last||!Number.isFinite(goal)||goal<=0)return '—';
@@ -481,7 +541,8 @@ $('weightUnit').onchange=()=>{
  data.settings.weightUnit=next;
  save();updateUnitLabels();$('historicalPhaseGoalLabel').textContent='阶段目标体重 · '+next.toUpperCase();render();toast('已切换为 '+next+'，历史数据保持不变');
 };
-$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,weightUnit:unit()};if(save()){render();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.6.4',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[]};if(save()){if(Array.isArray(obj.photos)){await photoReplace(obj.photos.filter(p=>p&&typeof p.id==='string'&&validDate(p.date)&&typeof p.image==='string'&&p.image.startsWith('data:image/')))}fillSettings();loadEntry(TODAY);render();toast('历史数据已导入')} }catch(err){alert('导入失败：'+err.message)}finally{e.target.value=''}};
+$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,weightUnit:unit()};if(save()){render();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.6.5',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[],
+ entries:obj.entries&&typeof obj.entries==='object'&&!Array.isArray(obj.entries)?obj.entries:{}};if(save()){if(Array.isArray(obj.photos)){await photoReplace(obj.photos.filter(p=>p&&typeof p.id==='string'&&validDate(p.date)&&typeof p.image==='string'&&p.image.startsWith('data:image/')))}fillSettings();loadEntry(TODAY);render();toast('历史数据已导入')} }catch(err){alert('导入失败：'+err.message)}finally{e.target.value=''}};
 function rounded(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}function lines(ctx,str,x,y,maxWidth,lineHeight,maxLines){let parts=[],line='';for(const ch of String(str)){if(ctx.measureText(line+ch).width>maxWidth&&line){parts.push(line);line=ch}else line+=ch}if(line)parts.push(line);parts.slice(0,maxLines).forEach((s,i)=>ctx.fillText(s,x,y+i*lineHeight))}
 function makeReportImage(){
  const card=$('reportCard'),box=card.getBoundingClientRect(),scale=3;
