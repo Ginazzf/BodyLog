@@ -191,7 +191,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 #historicalPhaseForm{margin-top:15px;border-top:1px solid #edf1f7;padding-top:5px}
 #historicalPhaseForm[hidden]{display:none}
 #goalRemain,.historical-phase .phase-metrics .metric:nth-child(2) strong{font-size:17px;letter-spacing:-.02em;white-space:nowrap}
-/* v1.7.4 phase layout */
+/* v1.7.5 phase layout */
 .historical-phase .phase-metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
 .historical-phase .phase-metrics .metric{padding:12px 7px!important;min-width:0;overflow-wrap:anywhere}
 .historical-phase .phase-metrics .metric strong{font-size:clamp(11px,3vw,16px)!important;white-space:normal!important;line-height:1.35;display:block}
@@ -240,7 +240,14 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 #home #entryMood{display:none!important}#home #entryWorkout{height:clamp(125px,23dvh,240px)!important;flex:1!important}.chart-tools{margin-top:12px}.chart-tools button{font-size:11px;padding:8px}.chart-toggle{letter-spacing:0;display:flex;align-items:center;gap:7px;margin:10px 0}.chart-toggle input{width:auto}#chart{height:auto;min-height:270px;touch-action:manipulation}.chart-point{cursor:pointer;stroke-width:1.5}.phase-analysis{font-size:12px;line-height:1.7;color:#60738e;background:#f4f7fc;border-radius:12px;padding:11px}.chart-expanded #trends>.panel:first-child{position:fixed;inset:0;z-index:40;margin:0;border-radius:0;overflow:auto;padding:16px;background:#fff}.chart-expanded #chartWrap{width:100%;overflow:auto}.chart-expanded #chart{width:100%;height:min(65vh,650px)}@media(orientation:portrait){.chart-expanded #chartWrap{width:calc(100vw - 32px)}.chart-expanded #chart{min-width:700px}}
 <style>
 .phase-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}.phase-metrics .metric{padding:15px 12px}.phase-metrics strong{font-size:19px;overflow-wrap:break-word}.historical-phase .phase-action{border:1px solid #e1e8f3;border-radius:9px;background:#fff;width:32px;height:32px;padding:6px!important;display:inline-flex;align-items:center;justify-content:center}.historical-phase .phase-action svg{width:17px;height:17px}#trends .panel:has(> .row #phaseHeading){display:none!important}.phase-summary{margin-top:12px;padding:12px;border-radius:12px;background:#f2f6fc;color:#405778;font-size:12px;line-height:1.65}.phase-summary:empty{display:none}.phase-summary strong{display:block;color:#284b82;font-size:14px}.phase-summary p{margin:5px 0 0}.phase-foot button{width:32px;height:32px;padding:0!important;min-width:32px;font-size:20px!important;display:inline-flex;align-items:center;justify-content:center}.phase-foot .muted{flex:1}.historical-phase .phase-foot{justify-content:flex-end}
-</style></style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.3</span></header>
+</style>
+/* v1.7.5: Restore full-width two-column phase metrics and unify with description */
+#historicalPhaseList .historical-phase .phase-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%;margin:13px 0!important}
+#historicalPhaseList .historical-phase .phase-metrics .metric{min-width:0;padding:15px 13px!important;overflow:visible}
+#historicalPhaseList .historical-phase .phase-metrics .metric strong{font-size:19px!important;line-height:1.3!important;white-space:normal!important;overflow-wrap:break-word}
+#historicalPhaseList .historical-phase .phase-metrics .metric .muted{font-size:12px!important}
+#historicalPhaseList .historical-phase .phase-summary{width:100%;box-sizing:border-box;margin-top:12px}
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.3</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重和今天的运动</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><textarea id="entryMood" hidden></textarea><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><p class="sub" style="margin:12px 0 5px">点击曲线上的点，添加旅行或饮食备注</p><div class="row chart-tools" style="justify-content:space-between;align-items:center"><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏体重刻度</label><button id="exportTrend" class="outline" type="button">生成图片 ↗</button></div><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
@@ -559,7 +566,7 @@ function phaseAnalysis(p){const r=phaseNameAndAdvice(p);return '建议阶段名�
 function waistChange(p){const a=Number(p.waistStart),b=Number(p.waistEnd);return a>0&&b>0?`${a} → ${b} cm (${b-a>0?'+':''}${(b-a).toFixed(1)} cm)`:'—'}
 function phaseActionIcon(kind){return kind==='edit'?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L9 17l-4 1 1-4z"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M5 6l1 14h12l1-14M10 10v7M14 10v7"/></svg>'}
 function phaseProgressNode(st,p){const progress=document.createElement('div');progress.className='phase-progress';const bar=document.createElement('div');bar.style.width=Math.min(100,Math.max(0,st.pct||0))+'%';progress.append(bar);const caption=document.createElement('span');caption.className='progress-caption';caption.textContent='完成 '+(st.pct||0).toFixed(0)+'%  ·  '+p.start+' → '+(p.end||'进行中');progress.append(caption);return progress}
-function makePhaseDescription(p){const el=document.createElement('div');el.className='phase-summary';const m=(p.method||'').trim();if(!m&&!p.waistStart&&!p.waistEnd)return el;const r=phaseNameAndAdvice(p);const h=document.createElement('strong');h.textContent='✦ '+r.name;el.append(h);if(m){const t=document.createElement('p');t.textContent='主要减重方式：'+m;el.append(t)}const a=document.createElement('p');a.textContent='阶段分析：'+r.advice;el.append(a);return el}
+function makePhaseDescription(p){const el=document.createElement('div');el.className='phase-summary';const m=(p.method||'').trim();if(!m&&!p.waistStart&&!p.waistEnd)return el;const r=phaseNameAndAdvice(p);const h=document.createElement('strong');h.textContent='✦ '+r.name;el.append(h);const a=document.createElement('p');a.textContent='阶段分析：'+r.advice;el.append(a);return el}
 let editingPhaseId=null;
 function renderHistoricalPhases(){
  const list=$('historicalPhaseList');list.replaceChildren();
@@ -731,27 +738,68 @@ $('exportTrend').onclick=()=>{
   const svgText=new XMLSerializer().serializeToString(clone);
   const blob=new Blob([svgText],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();
   img.onload=()=>{try{
-   const phases=[...data.historicalPhases.filter(p=>p&&p.start).sort((a,b)=>a.start.localeCompare(b.start))];const q=data.settings;if(q.phaseStart&&!phases.some(p=>p.start===q.phaseStart&&p.end===(q.phaseEnd||TODAY)&&p.name===(q.phaseName||'当前阶段')))phases.push({name:q.phaseName||'当前阶段',start:q.phaseStart,end:q.phaseEnd||TODAY,method:q.phaseMethod,waistStart:q.phaseWaistStart,waistEnd:q.phaseWaistEnd});
-   const c=document.createElement('canvas');c.width=1400;const ctx=c.getContext('2d');const pad=65;
-   function wrap(t,max){const lines=[];let line='';for(const ch of t){if(ctx.measureText(line+ch).width>max&&line){lines.push(line);line=''}line+=ch}if(line)lines.push(line);return lines}
-   // Phase summary as a comparison table directly below the chart: labels at left, phases in columns.
-   const rows=[['主要减重方式',...phases.map(p=>p.method||'—')],['腰围变化',...phases.map(p=>{const a=Number(p.waistStart),b=Number(p.waistEnd);return a>0&&b>0?(b-a>0?'+':'')+(b-a).toFixed(1)+' cm':'—'})],['阶段分析',...phases.map(p=>phaseNameAndAdvice(p).advice)]];
-   const col0=215,contentWidth=1270,colW=(contentWidth-col0)/Math.max(1,phases.length);const fontSize=25,lineHeight=40;
-   const breakLines=(txt,maxW)=>{ctx.font=fontSize+'px sans-serif';const lines=[];let line='';for(const ch of String(txt)){if(ctx.measureText(line+ch).width>maxW&&line){lines.push(line);line=''}line+=ch}if(line)lines.push(line);return lines.length?lines:['—']};
-   const table=rows.map(row=>{const cells=row.slice(1).map(x=>breakLines(x,colW-52));return {label:row[0],cells,height:Math.max(1,...cells.map(x=>x.length))*lineHeight+35}});
-   c.height=1080+table.reduce((a,r)=>a+r.height,0)+75;ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
-   ctx.fillStyle='#182a4c';ctx.font='bold 51px sans-serif';ctx.fillText('BODYLOG · Weight Journey',pad,92);
-   ctx.fillStyle='#71829e';ctx.font='26px sans-serif';ctx.fillText('体重趋势与阶段记录',pad,138);
-   ctx.drawImage(img,0,155,1400,870);
-   let y=1050;ctx.fillStyle='#eaf0f9';ctx.fillRect(pad,y,contentWidth,49);ctx.fillStyle='#213d69';ctx.font='bold 26px sans-serif';
-   phases.forEach((p,i)=>ctx.fillText(p.name||'Phase '+(i+1),pad+col0+i*colW+20,y+34));y+=49;
-   table.forEach((r,ri)=>{ctx.fillStyle=ri%2===0?'#f2f6fc':'#f8fafc';ctx.fillRect(pad,y,contentWidth,r.height);ctx.strokeStyle='#e2eaf4';ctx.beginPath();ctx.moveTo(pad,y+r.height);ctx.lineTo(pad+contentWidth,y+r.height);ctx.stroke();ctx.fillStyle='#355074';ctx.font='bold 23px sans-serif';ctx.fillText(r.label,pad+10,y+39);r.cells.forEach((lines,i)=>{ctx.fillStyle='#334765';ctx.font=fontSize+'px sans-serif';lines.forEach((line,j)=>ctx.fillText(line,pad+col0+i*colW+20,y+39+j*lineHeight))});y+=r.height});
-   URL.revokeObjectURL(url);$('previewImg').src=c.toDataURL('image/png');$('imagePreview').classList.add('active')
+   const phases=[...data.historicalPhases.filter(p=>p&&p.start).sort((a,b)=>a.start.localeCompare(b.start))];
+   const q=data.settings;
+   if(q.phaseStart&&!phases.some(p=>p.start===q.phaseStart&&p.end===(q.phaseEnd||TODAY)&&p.name===(q.phaseName||'当前阶段')))
+    phases.push({name:q.phaseName||'当前阶段',start:q.phaseStart,end:q.phaseEnd||TODAY,method:q.phaseMethod,waistStart:q.phaseWaistStart,waistEnd:q.phaseWaistEnd});
+   phases.sort((a,b)=>a.start.localeCompare(b.start));
+   const c=document.createElement('canvas');c.width=1400;const ctx=c.getContext('2d');
+   const pad=65,contentWidth=1270,col0=235,colW=(contentWidth-col0)/Math.max(1,phases.length);
+   const font='-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif';
+   const fontSize=30,lineHeight=47,cellPadding=24;
+   const setFont=(weight,size)=>{ctx.font=weight+' '+size+'px '+font};
+   const wrap=(text,maxW,weight='400',size=fontSize)=>{
+    setFont(weight,size);const lines=[];let line='';
+    for(const ch of String(text||'—')){if(ctx.measureText(line+ch).width>maxW&&line){lines.push(line);line=''}line+=ch}
+    if(line)lines.push(line);return lines.length?lines:['—'];
+   };
+   const waistDelta=p=>{const a=Number(p.waistStart),b=Number(p.waistEnd);return a>0&&b>0?(b-a>0?'+':'')+(b-a).toFixed(1)+' cm':'—'};
+   const rows=[
+    ['阶段名称',...phases.map(p=>phaseNameAndAdvice(p).name)],
+    ['主要减重方式',...phases.map(p=>p.method||'—')],
+    ['腰围变化',...phases.map(waistDelta)],
+    ['阶段分析',...phases.map(p=>phaseNameAndAdvice(p).advice)]
+   ];
+   const table=rows.map((row,ri)=>{
+    const cells=row.slice(1).map(x=>wrap(x,colW-cellPadding*2,ri===0?'600':'400',fontSize));
+    return {label:row[0],cells,height:Math.max(1,...cells.map(x=>x.length))*lineHeight+38};
+   });
+   const headerY=1020,headerH=67,tableH=table.reduce((n,r)=>n+r.height,0);
+   c.height=headerY+headerH+tableH+80;
+   ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+   ctx.fillStyle='#182a4c';setFont('700',52);ctx.fillText('BODYLOG · Weight Journey',pad,91);
+   ctx.fillStyle='#71829e';setFont('400',27);ctx.fillText('体重趋势与阶段记录',pad,138);
+   ctx.drawImage(img,0,155,1400,855);
+   // Table headers and alternating blue / mint phase columns match the chart's phase bars.
+   const x0=pad;let y=headerY;
+   ctx.fillStyle='#f1f4fa';ctx.fillRect(x0,y,col0,headerH);
+   setFont('700',29);ctx.fillStyle='#284066';ctx.fillText('项目',x0+18,y+45);
+   phases.forEach((p,i)=>{
+    const x=x0+col0+i*colW;
+    ctx.fillStyle=i%2===0?'#dfe9fc':'#d8f3e9';ctx.fillRect(x,y,colW,headerH);
+    ctx.fillStyle='#234274';setFont('700',31);
+    ctx.fillText('Phase '+(i+1),x+cellPadding,y+45);
+   });
+   y+=headerH;
+   table.forEach((row,ri)=>{
+    ctx.fillStyle=ri%2===0?'#f5f7fb':'#fff';ctx.fillRect(x0,y,col0,row.height);
+    ctx.fillStyle='#2c4166';setFont('700',27);ctx.fillText(row.label,x0+18,y+44);
+    row.cells.forEach((lines,i)=>{
+     const x=x0+col0+i*colW;
+     ctx.fillStyle=i%2===0?(ri%2===0?'#edf3ff':'#f5f8ff'):(ri%2===0?'#e8f8f1':'#f2fbf7');
+     ctx.fillRect(x,y,colW,row.height);
+     ctx.fillStyle='#233a60';setFont(ri===0?'600':'400',fontSize);
+     lines.forEach((line,j)=>ctx.fillText(line,x+cellPadding,y+43+j*lineHeight));
+    });
+    ctx.strokeStyle='#e0e7f0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x0,y+row.height);ctx.lineTo(x0+contentWidth,y+row.height);ctx.stroke();
+    y+=row.height;
+   });
+   ctx.strokeStyle='#e0e7f0';ctx.lineWidth=2;ctx.strokeRect(x0,headerY,contentWidth,headerH+tableH);
+   URL.revokeObjectURL(url);$('previewImg').src=c.toDataURL('image/png');$('imagePreview').classList.add('active');
   }catch(e){URL.revokeObjectURL(url);toast('生成失败：'+e.message)}};
   img.onerror=()=>{URL.revokeObjectURL(url);toast('生成失败，请重试')};img.src=url;
  }catch(e){toast('生成失败：'+e.message)}
 };
-
 
 </script>
 <script>
