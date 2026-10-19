@@ -249,7 +249,35 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 #home #entryWorkout{height:clamp(120px,19dvh,165px)!important;min-height:0!important;max-height:165px!important;flex:0 0 auto!important;overflow-y:auto!important;resize:none!important}
 #home #entryMood{display:none!important}
 @media(max-height:700px){#home #entryWorkout{height:clamp(90px,15dvh,120px)!important}}
-</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.11</span></header>
+
+/* v1.7.12: make daily card fill available viewport, with workout taking remaining space */
+#home.active{display:flex!important;flex-direction:column!important;height:calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;min-height:420px!important}
+#home>.panel{flex:1 1 auto!important;height:100%!important;min-height:0!important;margin:0!important;display:flex!important;flex-direction:column!important}
+#home #entryWorkout{flex:1 1 auto!important;height:auto!important;max-height:none!important;min-height:110px!important;overflow-y:auto!important;resize:none!important}
+#home .entry-actions{margin-top:10px!important;flex:0 0 auto!important}
+@media(max-height:670px){#home.active{height:calc(100dvh - 166px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;min-height:360px!important}#home #entryWorkout{min-height:70px!important}}
+/* v1.7.12: history calendar */
+.history-switch{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#history:has(#historyCalendar:not([hidden]))>.panel{padding:13px!important;margin-top:0!important}
+#historyCalendar[hidden]{display:none!important}
+.calendar-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#65738c;margin:12px 3px}
+.calendar-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+.calendar-month{margin:15px 0 22px}
+.calendar-month h3{font-size:15px;color:#273a5b;margin:0 0 11px}
+.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.calendar-weekdays span{text-align:center;color:#91a0b5;font-size:10px;padding:4px 0}
+.calendar-day{min-height:61px;border-radius:9px;background:#f7f9fc;border:1px solid #eaf0f7;padding:5px 3px;overflow:hidden}
+.calendar-day.blank{background:transparent;border:0}
+.calendar-day.today{outline:2px solid #7597cb;outline-offset:-2px}
+.calendar-day .daynum{font-size:11px;font-weight:750;color:#4b6184;display:block;margin-bottom:4px}
+.calendar-tag{display:block;border-radius:4px;padding:3px 2px;margin:2px 0;font-size:9px;line-height:1.2;font-weight:650;overflow-wrap:anywhere}
+.calendar-tag.strength{background:#e8edff;color:#4165ac}
+.calendar-tag.cardio{background:#dcf4e9;color:#287c64}
+.calendar-tag.other{background:#f2edf9;color:#80649b}
+.calendar-day.hasworkout{cursor:pointer}
+.calendar-day.hasworkout:active{opacity:.75}
+.calendar-details{margin:8px 0 16px;padding:12px;background:#f5f8fd;border-radius:12px;white-space:pre-wrap;font-size:12px;line-height:1.6}
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.12</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重和今天的运动</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><textarea id="entryMood" hidden></textarea><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><p class="sub" style="margin:12px 0 5px">点击曲线上的点，添加旅行或饮食备注</p><div class="row chart-tools" style="justify-content:space-between;align-items:center"><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏体重刻度</label><button id="exportTrend" class="outline" type="button">生成图片 ↗</button></div><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
@@ -265,7 +293,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 </div>
 
 </div></section>
-<section id="history" class="page"><div class="panel"><div class="history-switch" role="tablist" aria-label="历史记录类型"><button type="button" id="historyWeightTab" class="selected" role="tab" aria-selected="true">体重</button><button type="button" id="historyWorkoutTab" role="tab" aria-selected="false">运动</button></div><div id="historyList"></div></div></section>
+<section id="history" class="page"><div class="panel"><div class="history-switch" role="tablist" aria-label="历史记录类型"><button type="button" id="historyWeightTab" class="selected" role="tab" aria-selected="true">体重</button><button type="button" id="historyWorkoutTab" role="tab" aria-selected="false">运动</button><button type="button" id="historyCalendarTab" role="tab" aria-selected="false">日历</button></div><div id="historyList"></div><div id="historyCalendar" hidden></div></div></section>
 <section id="gallery" class="page"><div class="panel"><div class="gallery-heading"><div class="sectiontitle">Progress Photos</div><button class="gallery-add" id="addPhoto" type="button" aria-label="上传照片" title="上传照片">＋</button></div><input id="photoFile" type="file" accept="image/*" multiple style="display:none"><div class="gallery-grid" id="galleryGrid"></div></div><div class="panel"><div class="sectiontitle">Achievement Medals · 成就勋章</div><p class="sub" style="margin-top:6px">已解锁的勋章自动变为彩色并排在最前面</p><div id="medalGrid" class="medal-grid"></div></div></section>
 <section id="settings" class="page"><div class="panel"><div class="sectiontitle">Personal Settings</div><label>HEIGHT · CM</label><input type="number" id="height" min="80" max="250" step="0.1"><label>体重单位 · WEIGHT UNIT</label><select id="weightUnit" aria-label="体重单位"><option value="kg">kg · 公斤</option><option value="lb">lb · 磅</option></select><p class="sub">切换后自动换算已有记录、目标体重与图表显示，不改变实际重量。</p><label>当前阶段名称</label><input id="phaseName" placeholder="例如 Phase 2 · Recomposition"><label>阶段开始日期</label><input type="date" id="phaseStart"><label>当前阶段主要减重方式</label><textarea id="phaseMethod" placeholder="例如：力量训练 + 有氧，保证蛋白质和碳水"></textarea><div class="grid"><div><label>起始腰围 · cm</label><input id="phaseWaistStart" type="number" step="0.1"></div><div><label>目前腰围 · cm</label><input id="phaseWaistEnd" type="number" step="0.1"></div></div><label>预计目标日期</label><input type="date" id="phaseEnd"><label id="phaseGoalLabel">预计目标体重 · KG</label><input type="number" id="phaseGoal" min="20" max="400" step="0.1"><label>历史新低统计起始日期</label><input type="date" id="recordLowStart"><p class="sub">从该日期起，比较当天之前的所有体重记录；至少需要一条更早的记录。留空则从最早记录开始。</p><button class="primary full" id="saveSettings">保存设置</button></div><div class="panel"><div class="sectiontitle">Data & Backup</div><p class="sub" style="line-height:1.7">体重记录保存在本地存储，图集照片保存在本机 IndexedDB。不会自动同步，也不是云备份。删除网站数据可能导致丢失，请定期导出包含照片的 JSON 备份。</p><button class="full outline" id="export">导出完整 JSON 备份 ↓</button><label>恢复备份 / 导入电脑转换的历史数据</label><input type="file" id="import" accept=".json,application/json"><p class="sub">导入支持 BodyLog v1.0 / v1.1 备份格式，以及附带电脑转换工具生成的 JSON。导入前会要求确认，覆盖现有数据。</p></div></section></main>
 <nav class="tabs"><button data-page="home" class="active"><span>⌂</span>记录</button><button data-page="trends"><span>⌁</span>趋势</button><button data-page="history"><span>▦</span>历史</button><button data-page="gallery"><span>▧</span>成就</button><button data-page="settings"><span>⚙</span>设置</button></nav><div class="toast" id="toast"></div>
@@ -374,8 +402,51 @@ function applyHide(){$('rWeight').classList.toggle('hidevalue',$('hideWeight').c
 };$('saveOnly').onclick=()=>saveDailyEntry(false);$('saveEntry').onclick=()=>saveDailyEntry(true);
 function render(){renderChart();renderHistory();renderPhase();renderHistoricalPhases();renderMedals()}let historyMode="weight";
 $("historyWeightTab").onclick=()=>{historyMode="weight";renderHistory()};
-$("historyWorkoutTab").onclick=()=>{historyMode="workout";renderHistory()};
-function renderHistory(){const chronological=sorted();const a=chronological.slice().reverse();const previousWeightByDate=new Map();chronological.forEach((w,i)=>{if(i>0)previousWeightByDate.set(w.date,Number(chronological[i-1].weight))});const editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4Z"/></svg>';const deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg>';$('historyWeightTab').classList.toggle('selected',historyMode==='weight');$('historyWorkoutTab').classList.toggle('selected',historyMode==='workout');$('historyWeightTab').setAttribute('aria-selected',String(historyMode==='weight'));$('historyWorkoutTab').setAttribute('aria-selected',String(historyMode==='workout'));
+$("historyWorkoutTab").onclick=()=>{historyMode="workout";renderHistory()};$("historyCalendarTab").onclick=()=>{historyMode="calendar";renderHistory()};
+
+function classifyWorkoutLine(line){
+ const strength=/(撸铁|无氧|力量|负重|哑铃|杠铃|深蹲|硬拉|卧推|腿举|腿弯举|髋外展|高位下拉|划船|推举|胸推|肩推|保加利亚|二头|三头|kg\s*[×x*]|\d+\s*[×x*]\s*\d+|\d+\s*(?:lb|lbs|磅)|组\s*\d+|背部训练|胸肩|臀腿训练)/i;
+ const cardio=/(有氧|跑步|慢跑|快走|步行|爬楼|楼梯机|椭圆机|单车|骑行|游泳|zumba|尊巴|跳舞|舞蹈|golf|高尔夫|练球|沙漏腰|欧阳春晓|跳绳|HIIT|普拉提|瑜伽|拉伸|健身操)/i;
+ if(strength.test(line))return 'strength';
+ if(cardio.test(line))return 'cardio';
+ return 'other';
+}
+function workoutCalendarData(date){
+ const raw=dailyNotes(date).workout||'';
+ const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ const buckets={strength:[],cardio:[],other:[]};
+ for(const line of lines)buckets[classifyWorkoutLine(line)].push(line);
+ return {raw,buckets};
+}
+function renderWorkoutCalendar(){
+ $('historyList').hidden=true;$('historyCalendar').hidden=false;
+ for(const id of ['historyWeightTab','historyWorkoutTab','historyCalendarTab']){
+  const on=id==='historyCalendarTab';$(id).classList.toggle('selected',on);$(id).setAttribute('aria-selected',String(on));
+ }
+ const now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+ const records=new Set([...data.weights.map(w=>w.date),...Object.keys(data.entries||{}),...(data.workouts||[]).map(w=>w.date)]);
+ const months=[];
+ // Show current and previous month first, then older months where space permits.
+ for(let i=0;i<4;i++){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({year:d.getFullYear(),month:d.getMonth()})}
+ const html=months.map(({year,month})=>{
+  const firstDay=new Date(year,month,1).getDay(),length=new Date(year,month+1,0).getDate();
+  const days=Array.from({length:firstDay},()=>'<div class="calendar-day blank"></div>');
+  for(let n=1;n<=length;n++){
+   const date=year+'-'+String(month+1).padStart(2,'0')+'-'+String(n).padStart(2,'0');
+   const info=records.has(date)?workoutCalendarData(date):{raw:'',buckets:{strength:[],cardio:[],other:[]}};
+   const tags=[];
+   if(info.buckets.strength.length)tags.push('<span class="calendar-tag strength">撸铁</span>');
+   if(info.buckets.cardio.length)tags.push('<span class="calendar-tag cardio">有氧</span>');
+   if(info.buckets.other.length)tags.push('<span class="calendar-tag other">其他</span>');
+   days.push('<div class="calendar-day '+(date===today?'today ':'')+(info.raw?'hasworkout':'')+'" '+(info.raw?'data-caldate="'+date+'" title="查看运动记录"':'')+'><span class="daynum">'+n+'</span>'+tags.join('')+'</div>');
+  }
+  return '<section class="calendar-month"><h3>'+year+'年'+(month+1)+'月</h3><div class="calendar-weekdays">'+['日','一','二','三','四','五','六'].map(d=>'<span>'+d+'</span>').join('')+'</div><div class="calendar-days">'+days.join('')+'</div></section>';
+ }).join('');
+ $('historyCalendar').innerHTML='<div class="calendar-legend"><span><i style="background:#839eeb"></i>撸铁 / 力量</span><span><i style="background:#72c9a6"></i>有氧 / 运动</span><span><i style="background:#b3a1d2"></i>其他</span></div>'+html+'<div id="calendarDetail" class="calendar-details" hidden></div>';
+ $('historyCalendar').onclick=e=>{const day=e.target.closest('[data-caldate]');if(!day)return;const date=day.dataset.caldate,info=workoutCalendarData(date),detail=$('calendarDetail');detail.hidden=false;detail.textContent=date+'\n'+info.raw;day.after(detail)};
+}
+
+function renderHistory(){if(historyMode==='calendar'){renderWorkoutCalendar();return;}$('historyCalendar').hidden=true;$('historyList').hidden=false;$('historyCalendarTab').classList.remove('selected');$('historyCalendarTab').setAttribute('aria-selected','false');const chronological=sorted();const a=chronological.slice().reverse();const previousWeightByDate=new Map();chronological.forEach((w,i)=>{if(i>0)previousWeightByDate.set(w.date,Number(chronological[i-1].weight))});const editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4Z"/></svg>';const deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg>';$('historyWeightTab').classList.toggle('selected',historyMode==='weight');$('historyWorkoutTab').classList.toggle('selected',historyMode==='workout');$('historyWeightTab').setAttribute('aria-selected',String(historyMode==='weight'));$('historyWorkoutTab').setAttribute('aria-selected',String(historyMode==='workout'));
 if(historyMode==='workout'){const workouts=[...a.map(w=>({date:w.date,workout:dailyNotes(w.date).workout})),
  ...Object.keys(data.entries).filter(date=>!a.some(w=>w.date===date)).map(date=>({date,workout:dailyNotes(date).workout}))]
  .filter(w=>typeof w.workout==='string'&&w.workout.trim()).sort((x,y)=>y.date.localeCompare(x.date));$('historyList').innerHTML=workouts.length?workouts.map(w=>`<div class="workout-entry"><div class="workout-head"><time class="workout-date" datetime="${esc(w.date)}">${esc(w.date)}</time><div class="history-right"><button type="button" class="history-action" data-edit="${esc(w.date)}" aria-label="编辑 ${esc(w.date)} 的运动记录" title="编辑">${editIcon}</button><button type="button" class="history-action delete" data-delete="${esc(w.date)}" aria-label="删除 ${esc(w.date)} 的运动记录" title="删除运动记录">${deleteIcon}</button></div></div><div class="workout-content">${esc(w.workout)}</div></div>`).join(''):'<div class="empty">还没有运动记录</div>';return;}
