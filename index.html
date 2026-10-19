@@ -225,9 +225,9 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 .medal.locked .medal-icon{filter:grayscale(1);opacity:.28}.medal.locked{background:#f7f8fa;opacity:.78}
 .medal.unlocked{background:#fffaf0;border-color:#e9d4a6}.medal.unlocked span{color:#ae7a20;font-weight:700}
 #home #entryMood{display:none!important}#home #entryWorkout{height:clamp(125px,23dvh,240px)!important;flex:1!important}.chart-tools{margin-top:12px}.chart-tools button{font-size:11px;padding:8px}.chart-toggle{letter-spacing:0;display:flex;align-items:center;gap:7px;margin:10px 0}.chart-toggle input{width:auto}#chart{height:auto;min-height:270px;touch-action:manipulation}.chart-point{cursor:pointer;stroke-width:1.5}.phase-analysis{font-size:12px;line-height:1.7;color:#60738e;background:#f4f7fc;border-radius:12px;padding:11px}.chart-expanded #trends>.panel:first-child{position:fixed;inset:0;z-index:40;margin:0;border-radius:0;overflow:auto;padding:16px;background:#fff}.chart-expanded #chartWrap{width:100%;overflow:auto}.chart-expanded #chart{width:100%;height:min(65vh,650px)}@media(orientation:portrait){.chart-expanded #chartWrap{width:calc(100vw - 32px)}.chart-expanded #chart{min-width:700px}}
-</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.0</span></header>
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.1</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重和今天的运动</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><textarea id="entryMood" hidden></textarea><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
-<section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><div class="row chart-tools"><span class="sub">点击曲线上的点，添加旅行或饮食备注</span><button id="expandChart" class="outline" type="button">⛶ 横屏大图</button></div><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏纵坐标体重</label><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
+<section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><p class="sub" style="margin:12px 0 5px">点击曲线上的点，添加旅行或饮食备注</p><div class="row chart-tools" style="justify-content:space-between;align-items:center"><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏体重刻度</label><button id="exportTrend" class="outline" type="button">生成图片 ↗</button></div><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
 
 <div class="panel">
@@ -361,13 +361,15 @@ function phaseItems(){return [...data.historicalPhases.map((p,i)=>({...p,tag:'Ph
 function renderChart(){let a=sorted();const from=$('fromDate').value,to=$('toDate').value;if(from||to)a=a.filter(w=>(!from||w.date>=from)&&(!to||w.date<=to));else if(range==='phase')a=a.filter(w=>!data.settings.phaseStart||w.date>=data.settings.phaseStart);else if(range!=='all')a=a.filter(w=>w.date>=shift(TODAY,-Number(range)+1)&&w.date<=TODAY);
  $('periodRecords').textContent=a.length+' days';$('periodChange').textContent=a.length>=2?signedWeight(a.at(-1).weight-a[0].weight)+' '+unit():'—';const svg=$('chart');if(!a.length){svg.innerHTML='<text x="175" y="110" text-anchor="middle" fill="#98a6b9">此时间段没有记录</text>';return}
  const phases=phaseItems(),dates=[...a.map(w=>w.date),...phases.flatMap(p=>[p.start,p.end])].sort(),first=a[0].date,last=a.at(-1).date;
- const day=d=>Date.parse(d+'T00:00:00Z')/86400000,lo=day(first),hi=day(last),x=d=>42+(hi===lo?146:(day(d)-lo)/(hi-lo)*292);
+ const day=d=>Date.parse(d+'T00:00:00Z')/86400000,lo=day(first),hi=day(last);
+ // Equal spacing for recorded weigh-ins avoids exaggerated horizontal gaps on skipped days.
+ const x=d=>{const exact=a.findIndex(w=>w.date===d);if(exact>=0)return 42+(a.length===1?146:exact/(a.length-1)*292);let k=a.findIndex(w=>w.date>d);if(k<0)return 334;if(k===0)return 42;const t=(day(d)-day(a[k-1].date))/(day(a[k].date)-day(a[k-1].date));return 42+((k-1+t)/(a.length-1))*292};
  const vals=a.map(w=>Number(w.weight)),min=Math.min(...vals)-.5,max=Math.max(...vals)+.5,span=max-min,y=w=>165-(w-min)/span*120;
  let s='';for(let i=0;i<4;i++){const yy=32+i*40;s+=`<line x1="42" x2="334" y1="${yy}" y2="${yy}" stroke="#e6ebf4" stroke-dasharray="4 4"/>`;if(!$('hideYAxis').checked)s+=`<text x="3" y="${yy+4}" font-size="10" fill="#91a0b5">${weightText(max-i*span/3)}</text>`}
  s+=`<polyline points="${a.map(w=>x(w.date)+','+y(w.weight)).join(' ')}" stroke="#5d82bd" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
  a.forEach(w=>{const note=data.pointNotes[w.date]||'';s+=`<circle class="chart-point" data-date="${w.date}" cx="${x(w.date)}" cy="${y(w.weight)}" r="${note?4.5:3}" fill="${note?'#d68a50':'#5d82bd'}" stroke="white" stroke-width="1"><title>${esc(w.date)} ${weightWithUnit(w.weight)} ${esc(note)}</title></circle>`;if(note)s+=`<text x="${x(w.date)}" y="${Math.max(12,y(w.weight)-11)}" font-size="9" text-anchor="middle" fill="#bd7540">${esc(note.slice(0,12))}</text>`});
  const nodes=[first,last,...phases.flatMap(p=>[p.start,p.end])].filter(d=>d>=first&&d<=last).sort();const unique=[...new Set(nodes)];let lastX=-100;unique.forEach((d,i)=>{const xx=x(d);if(xx-lastX<27&&i!==unique.length-1)return;lastX=xx;s+=`<line x1="${xx}" x2="${xx}" y1="175" y2="181" stroke="#9aaac1"/><text x="${xx}" y="193" text-anchor="middle" font-size="8.5" fill="#64758d">${d.slice(5)}</text>`});
- phases.forEach((p,i)=>{const l=Math.max(lo,day(p.start)),r=Math.min(hi,day(p.end||last));if(r<l)return;const xx=42+(l-lo)/(hi-lo||1)*292,ww=Math.max(2,(r-l)/(hi-lo||1)*292),yy=206+i%3*19;s+=`<rect x="${xx}" y="${yy}" width="${ww}" height="8" rx="4" fill="${['#8ba7d3','#8dc7b6','#d3b28b'][i%3]}"/><text x="${xx+ww/2}" y="${yy+17}" text-anchor="middle" font-size="9" fill="#52627c">${esc(p.name||p.tag)}</text>`});
+ phases.forEach((p,i)=>{const l=Math.max(lo,day(p.start)),r=Math.min(hi,day(p.end||last));if(r<l)return;const xx=x(l===lo?first:p.start),right=x(r===hi?last:p.end||last),ww=Math.max(2,right-xx),yy=206;s+=`<rect x="${xx}" y="${yy}" width="${ww}" height="8" rx="4" fill="${['#8ba7d3','#8dc7b6','#d3b28b'][i%3]}"/><text x="${xx+ww/2}" y="${yy+17}" text-anchor="middle" font-size="9" fill="#52627c">${esc(p.name||p.tag)}</text>`});
  svg.setAttribute('viewBox','0 0 350 270');svg.innerHTML=s;
  svg.querySelectorAll('.chart-point').forEach(el=>el.addEventListener('click',()=>{const d=el.dataset.date,old=data.pointNotes[d]||'',note=prompt(d+' 的备注（清空可删除）：',old);if(note===null)return;if(note.trim())data.pointNotes[d]=note.trim().slice(0,50);else delete data.pointNotes[d];save();renderChart()}));
 }
@@ -530,6 +532,7 @@ function phaseStats(p){
  return {entries,first,last,goal,diff,achieved,pct};
 }
 function phaseAnalysis(p,st){const m=(p.method||'').toLowerCase();const strength=/力量|无氧|抗阻|举铁|weight|strength/.test(m),cardio=/有氧|跑|走|爬楼|zumba|cardio/.test(m),diet=/节食|少吃|热量缺口|低卡|diet/.test(m);const name=strength&&cardio?'力量塑形与有氧结合期':strength?'力量训练与身体重组期':diet&&cardio?'饮食控制与有氧减重期':cardio?'有氧耐力减重期':diet?'饮食调整期':'自定义健康管理期';let advice=strength?'力量训练有助于保留肌肉，建议关注力量表现、恢复和蛋白质摄入。':diet?'若热量缺口过大，可能影响恢复和肌肉保留，建议采用温和、可持续的方式。':'建议结合腰围、力量和长期体重趋势评估，而非仅看短期波动。';const ws=Number(p.waistStart),we=Number(p.waistEnd);return '建议阶段名：'+name+' · '+(p.method||'未填写减重方式')+(ws>0&&we>0?' · 腰围 '+ws+' → '+we+' cm（'+(we-ws>0?'+':'')+(we-ws).toFixed(1)+' cm）':'')+'。'+advice+'（基于填写内容的规则分析，非在线 AI 或医疗评估）'}
+let editingPhaseId=null;
 function renderHistoricalPhases(){
  const list=$('historicalPhaseList');list.replaceChildren();
  const phases=data.historicalPhases.filter(p=>p&&validDate(p.start)&&validDate(p.end)&&p.start<=p.end&&Number.isFinite(Number(p.goal)))
@@ -566,14 +569,14 @@ function renderHistoricalPhases(){
    data.historicalPhases=data.historicalPhases.filter(x=>x.id!==p.id);
    if(save()){renderHistoricalPhases();toast('历史阶段已删除')}
   };
-  foot.append(detail,remove);card.append(head,dates,analysis,metrics,progress,foot);list.append(card);
+  const edit=document.createElement('button');edit.type='button';edit.className='outline';edit.textContent='编辑阶段';edit.onclick=()=>{editingPhaseId=p.id;for(const [field,value] of [['Name',p.name],['Start',p.start],['End',p.end],['Goal',weightText(p.goal)],['Method',p.method||''],['WaistStart',p.waistStart||''],['WaistEnd',p.waistEnd||'']])$('historicalPhase'+field).value=value;$('historicalPhaseForm').hidden=false;$('saveHistoricalPhase').textContent='保存修改';$('historicalPhaseForm').scrollIntoView({behavior:'smooth',block:'center'})};foot.append(detail,edit,remove);card.append(head,dates,analysis,metrics,progress,foot);list.append(card);
  }
 }
 $('addHistoricalPhase').onclick=()=>{
  const form=$('historicalPhaseForm');form.hidden=!form.hidden;
- if(!form.hidden){$('historicalPhaseGoalLabel').textContent='阶段目标体重 · '+unit().toUpperCase();$('historicalPhaseName').focus()}
+ if(!form.hidden){editingPhaseId=null;$('saveHistoricalPhase').textContent='保存阶段';$('historicalPhaseGoalLabel').textContent='阶段目标体重 · '+unit().toUpperCase();$('historicalPhaseName').focus()}
 };
-$('cancelHistoricalPhase').onclick=()=>{$('historicalPhaseForm').hidden=true};
+$('cancelHistoricalPhase').onclick=()=>{$('historicalPhaseForm').hidden=true;editingPhaseId=null};
 $('saveHistoricalPhase').onclick=()=>{
  const name=$('historicalPhaseName').value.trim(),start=$('historicalPhaseStart').value,end=$('historicalPhaseEnd').value;
  const raw=$('historicalPhaseGoal').value.trim(),goal=storeWeight(Number(raw));
@@ -582,7 +585,7 @@ $('saveHistoricalPhase').onclick=()=>{
  if(!raw||!Number.isFinite(goal)||goal<20||goal>400)return toast('请输入有效的阶段目标体重');
  const method=$('historicalPhaseMethod').value.trim(),waistStart=$('historicalPhaseWaistStart').value,waistEnd=$('historicalPhaseWaistEnd').value;
  const item={method,waistStart,waistEnd,id:Date.now()+'-'+Math.random().toString(36).slice(2),name,start,end,goal};
- data.historicalPhases.push(item);
+ if(editingPhaseId){const index=data.historicalPhases.findIndex(p=>p.id===editingPhaseId);if(index>=0){item.id=editingPhaseId;data.historicalPhases[index]=item}else data.historicalPhases.push(item)}else data.historicalPhases.push(item);editingPhaseId=null;$('saveHistoricalPhase').textContent='保存阶段';
  if(save()){
   $('historicalPhaseForm').hidden=true;
   $('historicalPhaseName').value='';$('historicalPhaseStart').value='';$('historicalPhaseEnd').value='';$('historicalPhaseGoal').value='';$('historicalPhaseMethod').value='';$('historicalPhaseWaistStart').value='';$('historicalPhaseWaistEnd').value='';
@@ -604,7 +607,7 @@ $('weightUnit').onchange=()=>{
  data.settings.weightUnit=next;
  save();updateUnitLabels();$('historicalPhaseGoalLabel').textContent='阶段目标体重 · '+next.toUpperCase();render();toast('已切换为 '+next+'，历史数据保持不变');
 };
-$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,phaseMethod:$('phaseMethod').value.trim(),phaseWaistStart:$('phaseWaistStart').value,phaseWaistEnd:$('phaseWaistEnd').value,weightUnit:unit()};if(save()){render();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.7.0',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[],
+$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,phaseMethod:$('phaseMethod').value.trim(),phaseWaistStart:$('phaseWaistStart').value,phaseWaistEnd:$('phaseWaistEnd').value,weightUnit:unit()};if(save()){render();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.7.1',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[],
  pointNotes:obj.pointNotes||{},entries:obj.entries&&typeof obj.entries==='object'&&!Array.isArray(obj.entries)?obj.entries:{}};if(save()){if(Array.isArray(obj.photos)){await photoReplace(obj.photos.filter(p=>p&&typeof p.id==='string'&&validDate(p.date)&&typeof p.image==='string'&&p.image.startsWith('data:image/')))}fillSettings();loadEntry(TODAY);render();toast('历史数据已导入')} }catch(err){alert('导入失败：'+err.message)}finally{e.target.value=''}};
 function rounded(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}function lines(ctx,str,x,y,maxWidth,lineHeight,maxLines){let parts=[],line='';for(const ch of String(str)){if(ctx.measureText(line+ch).width>maxWidth&&line){parts.push(line);line=ch}else line+=ch}if(line)parts.push(line);parts.slice(0,maxLines).forEach((s,i)=>ctx.fillText(s,x,y+i*lineHeight))}
 function makeReportImage(){
@@ -678,7 +681,18 @@ function makeReportImage(){
 }
 
 $('hideYAxis').onchange=renderChart;
-$('expandChart').onclick=()=>{document.body.classList.toggle('chart-expanded');$('expandChart').textContent=document.body.classList.contains('chart-expanded')?'✕ 关闭大图':'⛶ 横屏大图';renderChart()};
+$('exportTrend').onclick=()=>{
+ try{
+  const original=$('chart');const clone=original.cloneNode(true);
+  clone.setAttribute('xmlns','http://www.w3.org/2000/svg');clone.setAttribute('width','1050');clone.setAttribute('height','810');
+  const svgText=new XMLSerializer().serializeToString(clone);
+  const blob=new Blob([svgText],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();
+  img.onload=()=>{const c=document.createElement('canvas');c.width=1400;c.height=1080;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);$('previewImg').src=c.toDataURL('image/png');$('imagePreview').classList.add('active')};
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('生成失败，请重试')};img.src=url;
+ }catch(e){toast('生成失败：'+e.message)}
+};
+
+
 </script>
 <script>
 /* Fit the entry panel between its current top edge and the fixed navigation.
@@ -701,7 +715,5 @@ $('expandChart').onclick=()=>{document.body.classList.toggle('chart-expanded');$
  setTimeout(fitHome,150);
 })();
 
-$('hideYAxis').onchange=renderChart;
-$('expandChart').onclick=()=>{document.body.classList.toggle('chart-expanded');$('expandChart').textContent=document.body.classList.contains('chart-expanded')?'✕ 关闭大图':'⛶ 横屏大图';renderChart()};
 </script>
 </body></html>
