@@ -296,11 +296,11 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 .calendar-tag.golf{background:#eee6fa!important;color:#7550a5!important}
 .calendar-tag.cardio{background:#dcf4e9!important;color:#287c64!important}
 
-/* v1.7.18 Nutrition */
+/* v1.7.19 Nutrition */
 .nut-hero{background:linear-gradient(135deg,#edf3ff,#f8faff);border-radius:17px;padding:19px;text-align:center;margin:12px 0}.nut-hero strong{display:block;font-size:31px;color:#253e72}.nut-hero small{color:#70829e}.nut-mode{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.nut-mode button{font-size:12px;padding:10px 3px;background:#f0f3f9;color:#50627c}.nut-mode button.on{background:#dfeafa;color:#27599e;box-shadow:inset 0 0 0 1px #a7c3ec}.nut-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.nut-tile{border-radius:14px;padding:15px 12px}.nut-tile b{display:block;font-size:14px}.nut-tile strong{font-size:26px;display:inline-block;margin-top:6px}.nut-tile small{font-size:11px}.nut-track{height:6px;background:#ffffffb8;border-radius:9px;margin-top:10px;overflow:hidden}.nut-track i{display:block;height:100%;border-radius:9px;background:currentColor}.nut-food{display:grid;grid-template-columns:1fr 1fr;gap:9px}.nut-food-card{background:#f7f9fd;border:1px solid #e7ecf4;border-radius:12px;padding:12px}.nut-food-card .emoji{font-size:29px}.nut-food-card b{display:block;font-size:13px;color:#304562;margin:6px 0}.nut-food-card small{display:block;color:#687b95;font-size:11px;line-height:1.6}.nut-calc{display:grid;grid-template-columns:1fr 95px;gap:8px}.nut-calc input,.nut-calc select{min-width:0}.nut-result{background:#edf5fc;border-radius:12px;padding:12px;line-height:1.9;font-size:13px;color:#34516e}.nut-note{font-size:11px;line-height:1.7;color:#7b8ba2;margin-top:10px}
 
 .nut-food-card{cursor:pointer;text-align:left;width:100%;font:inherit}.nut-food-card:active{background:#e9f1fd}.nut-track{color:#527db9}.nut-tile strong{font-size:22px}.nut-tile .nut-percent{display:block;font-size:11px;margin-top:5px}.nut-food-card small{word-break:break-word}.nut-food-card .nut-food-actions{display:flex;justify-content:space-between;align-items:center}.nut-food-card .nut-food-actions button{padding:3px 7px;font-size:11px}.nut-log-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8edf5;padding:10px 0;gap:10px}.nut-log-row button{font-size:12px;padding:7px 9px}.nut-food{max-height:440px;overflow-y:auto}.nut-hero .nut-track{margin-top:12px}#nutDate{margin-bottom:8px}#nutEditor[hidden],#nutPortion[hidden]{display:none!important}
-</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.18</span></header>
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.19</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重和今天的运动</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><textarea id="entryMood" hidden></textarea><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><p class="sub" style="margin:12px 0 5px">点击曲线上的点，添加旅行或饮食备注</p><div class="row chart-tools" style="justify-content:space-between;align-items:center"><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏体重刻度</label><button id="exportTrend" class="outline" type="button">生成图片 ↗</button></div><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
@@ -767,7 +767,7 @@ $('weightUnit').onchange=()=>{
  data.settings.weightUnit=next;
  save();updateUnitLabels();$('historicalPhaseGoalLabel').textContent='阶段目标体重 · '+next.toUpperCase();render();toast('已切换为 '+next+'，历史数据保持不变');
 };
-$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,phaseMethod:$('phaseMethod').value.trim(),phaseWaistStart:$('phaseWaistStart').value,phaseWaistEnd:$('phaseWaistEnd').value,weightUnit:unit()};if(save()){render();renderNutrition();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.7.18',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,nutFoods:Array.isArray(obj.nutFoods)?obj.nutFoods:[],nutLogs:obj.nutLogs||{},nutModes:obj.nutModes||{},settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[],
+$('saveSettings').onclick=()=>{const h=Number($('height').value),g=$('phaseGoal').value===''?null:storeWeight(Number($('phaseGoal').value)),start=$('phaseStart').value,end=$('phaseEnd').value;if($('recordLowStart').value&&!validDate($('recordLowStart').value))return toast('历史新低起始日期无效');if(h<80||h>250||g!==null&&(g<20||g>400)||start&&end&&start>end)return toast('请检查身高、目标或日期');data.settings={...data.settings,height:h,phaseName:$('phaseName').value.trim(),phaseStart:start,phaseEnd:end,phaseGoal:g,recordLowStart:$('recordLowStart').value,phaseMethod:$('phaseMethod').value.trim(),phaseWaistStart:$('phaseWaistStart').value,phaseWaistEnd:$('phaseWaistEnd').value,weightUnit:unit()};if(save()){render();renderNutrition();toast('设置已保存')}};function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}$('export').onclick=async()=>{try{const photos=await photoAll();download(new Blob([JSON.stringify({app:'BodyLog',version:'1.7.19',exportedAt:new Date().toISOString(),...data,photos},null,2)],{type:'application/json'}),'BodyLog-backup-'+TODAY+'.json');toast('备份已导出（含 '+photos.length+' 张照片）')}catch(err){alert('备份失败：'+err.message)}};$('import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!Array.isArray(obj.weights)||!Array.isArray(obj.workouts))throw Error('文件结构不符合要求');const weights=obj.weights.map(w=>({...w,weight:Number(w.weight)}));if(weights.some(w=>!validDate(w.date)||!Number.isFinite(w.weight)||w.weight<20||w.weight>400))throw Error('体重记录日期或数值无效');if(!confirm('导入将覆盖当前记录，建议先导出备份。确认继续？'))return;data={weights,workouts:obj.workouts,nutFoods:Array.isArray(obj.nutFoods)?obj.nutFoods:[],nutLogs:obj.nutLogs||{},nutModes:obj.nutModes||{},settings:{...fresh().settings,...(obj.settings||{})},quotes:obj.quotes||{},historicalPhases:Array.isArray(obj.historicalPhases)?obj.historicalPhases:[],
  pointNotes:obj.pointNotes||{},entries:obj.entries&&typeof obj.entries==='object'&&!Array.isArray(obj.entries)?obj.entries:{}};if(save()){if(Array.isArray(obj.photos)){await photoReplace(obj.photos.filter(p=>p&&typeof p.id==='string'&&validDate(p.date)&&typeof p.image==='string'&&p.image.startsWith('data:image/')))}fillSettings();loadEntry(TODAY);render();toast('历史数据已导入')} }catch(err){alert('导入失败：'+err.message)}finally{e.target.value=''}};
 function rounded(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}function lines(ctx,str,x,y,maxWidth,lineHeight,maxLines){let parts=[],line='';for(const ch of String(str)){if(ctx.measureText(line+ch).width>maxWidth&&line){parts.push(line);line=ch}else line+=ch}if(line)parts.push(line);parts.slice(0,maxLines).forEach((s,i)=>ctx.fillText(s,x,y+i*lineHeight))}
 function makeReportImage(){
@@ -820,7 +820,7 @@ function makeReportImage(){
  ctx.restore();
  return c.toDataURL('image/png');
 }let previewData='';function openReportImage(){try{previewData=makeReportImage();$('previewImg').src=previewData;$('imagePreview').classList.add('active')}catch(err){toast('图片生成失败')}}$('shareReport').onclick=openReportImage;$('closePreview').onclick=()=>$('imagePreview').classList.remove('active');let holdTimer,holdX,holdY;const card=$('reportCard');card.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;holdX=e.touches[0].clientX;holdY=e.touches[0].clientY;clearTimeout(holdTimer);holdTimer=setTimeout(openReportImage,650)},{passive:true});card.addEventListener('touchmove',e=>{if(Math.abs(e.touches[0].clientX-holdX)>12||Math.abs(e.touches[0].clientY-holdY)>12)clearTimeout(holdTimer)},{passive:true});['touchend','touchcancel'].forEach(t=>card.addEventListener(t,()=>clearTimeout(holdTimer)));
-// v1.7.18: Local food catalog and dated nutrition log.
+// v1.7.19: Local food catalog and dated nutrition log.
 const NUT_FOODS=[
 {name:'米饭（熟）',icon:'🍚',p:2.7,c:28,f:.3,fiber:.4,group:'碳水'},
 {name:'红薯（熟）',icon:'🍠',p:1.6,c:20,f:.1,fiber:3,group:'碳水'},
@@ -838,7 +838,107 @@ const NUT_FOODS=[
 {name:'菠菜',icon:'🥬',p:2.9,c:3.6,f:.4,fiber:2.2,group:'纤维'},
 {name:'蓝莓',icon:'🫐',p:.7,c:14.5,f:.3,fiber:2.4,group:'纤维'},
 {name:'苹果（带皮）',icon:'🍎',p:.3,c:13.8,f:.2,fiber:2.4,group:'纤维'}
-].map((x,i)=>({...x,id:'base'+i,unit:'g',basis:100,k:Math.round((x.p*4+x.c*4+x.f*9)*10)/10}));
+,
+{name:'Jollibee 炸鸡小棒腿（估算）',icon:'🍗',p:13,c:5,f:11,fiber:0,group:'蛋白质',unit:'个',basis:1,k:165},
+{name:'Bar 炸鸡翅（单节，无酱估算）',icon:'🍗',p:7,c:2,f:7,fiber:0,group:'蛋白质',unit:'个',basis:1,k:100},
+{name:'鸡腿肉（熟，去皮）',icon:'🍗',p:26,c:0,f:11,fiber:0,group:'蛋白质',unit:'g',basis:100,k:203},
+{name:'鸡腿棒（烤熟，带皮）',icon:'🍗',p:25,c:0,f:11,fiber:0,group:'蛋白质',unit:'g',basis:100,k:199},
+{name:'火鸡胸肉（熟）',icon:'🍗',p:29,c:0,f:2,fiber:0,group:'蛋白质',unit:'g',basis:100,k:134},
+{name:'瘦牛肉（熟）',icon:'🥩',p:27,c:0,f:9,fiber:0,group:'蛋白质',unit:'g',basis:100,k:189},
+{name:'牛腱（熟）',icon:'🥩',p:29,c:0,f:7,fiber:0,group:'蛋白质',unit:'g',basis:100,k:179},
+{name:'牛里脊（熟）',icon:'🥩',p:27,c:0,f:8,fiber:0,group:'蛋白质',unit:'g',basis:100,k:180},
+{name:'猪里脊（熟）',icon:'🥩',p:27,c:0,f:6,fiber:0,group:'蛋白质',unit:'g',basis:100,k:162},
+{name:'瘦猪肉（熟）',icon:'🥩',p:27,c:0,f:8,fiber:0,group:'蛋白质',unit:'g',basis:100,k:180},
+{name:'羊腿肉（熟）',icon:'🥩',p:27,c:0,f:9,fiber:0,group:'蛋白质',unit:'g',basis:100,k:189},
+{name:'鸡翅（烤熟，单节）',icon:'🍗',p:8,c:0,f:6,fiber:0,group:'蛋白质',unit:'个',basis:1,k:86},
+{name:'黑虎虾（熟，去壳）',icon:'🦐',p:24,c:0,f:0.3,fiber:0,group:'蛋白质',unit:'g',basis:100,k:98.7},
+{name:'虾仁（熟）',icon:'🦐',p:24,c:0,f:0.3,fiber:0,group:'蛋白质',unit:'g',basis:100,k:98.7},
+{name:'鳕鱼（熟）',icon:'🐟',p:23,c:0,f:1,fiber:0,group:'蛋白质',unit:'g',basis:100,k:101},
+{name:'罗非鱼（熟）',icon:'🐟',p:26,c:0,f:3,fiber:0,group:'蛋白质',unit:'g',basis:100,k:131},
+{name:'金枪鱼（水浸罐头）',icon:'🐟',p:25,c:0,f:1,fiber:0,group:'蛋白质',unit:'g',basis:100,k:109},
+{name:'沙丁鱼（罐头）',icon:'🐟',p:25,c:0,f:11,fiber:0,group:'蛋白质',unit:'g',basis:100,k:199},
+{name:'鲭鱼（熟）',icon:'🐟',p:24,c:0,f:14,fiber:0,group:'蛋白质',unit:'g',basis:100,k:222},
+{name:'扇贝（熟）',icon:'🦪',p:24,c:5,f:1,fiber:0,group:'蛋白质',unit:'g',basis:100,k:125},
+{name:'蛤蜊（熟）',icon:'🦪',p:26,c:5,f:2,fiber:0,group:'蛋白质',unit:'g',basis:100,k:142},
+{name:'鱿鱼（熟）',icon:'🦑',p:16,c:3,f:1.4,fiber:0,group:'蛋白质',unit:'g',basis:100,k:88.6},
+{name:'鸡蛋清',icon:'🥚',p:3.6,c:0.2,f:0,fiber:0,group:'蛋白质',unit:'个',basis:1,k:17},
+{name:'水煮蛋',icon:'🥚',p:6.3,c:0.6,f:5.3,fiber:0,group:'蛋白质',unit:'个',basis:1,k:75},
+{name:'低脂牛奶（1%）',icon:'🥛',p:3.4,c:5,f:1,fiber:0,group:'蛋白质',unit:'g',basis:100,k:42.6},
+{name:'全脂牛奶',icon:'🥛',p:3.2,c:4.8,f:3.3,fiber:0,group:'蛋白质',unit:'g',basis:100,k:61.7},
+{name:'无糖豆奶',icon:'🥛',p:3.3,c:1.5,f:1.8,fiber:0.5,group:'蛋白质',unit:'g',basis:100,k:35.4},
+{name:'低脂茅屋奶酪',icon:'🧀',p:12,c:3.5,f:2.3,fiber:0,group:'蛋白质',unit:'g',basis:100,k:82.7},
+{name:'低脂奶酪',icon:'🧀',p:25,c:3,f:15,fiber:0,group:'蛋白质',unit:'g',basis:100,k:247},
+{name:'毛豆（熟）',icon:'🫛',p:12,c:9,f:5,fiber:5,group:'蛋白质',unit:'g',basis:100,k:129},
+{name:'天贝',icon:'🫘',p:20,c:8,f:11,fiber:5,group:'蛋白质',unit:'g',basis:100,k:211},
+{name:'嫩豆腐',icon:'🫘',p:5,c:2,f:3,fiber:0.3,group:'蛋白质',unit:'g',basis:100,k:55},
+{name:'鹰嘴豆（熟）',icon:'🫘',p:9,c:27,f:2.6,fiber:7.6,group:'蛋白质',unit:'g',basis:100,k:167.4},
+{name:'扁豆（熟）',icon:'🫘',p:9,c:20,f:0.4,fiber:8,group:'蛋白质',unit:'g',basis:100,k:119.6},
+{name:'黑豆（熟）',icon:'🫘',p:9,c:24,f:0.5,fiber:8.7,group:'蛋白质',unit:'g',basis:100,k:136.5},
+{name:'红腰豆（熟）',icon:'🫘',p:8.7,c:22.8,f:0.5,fiber:6.4,group:'蛋白质',unit:'g',basis:100,k:130.5},
+{name:'乳清蛋白粉（参考）',icon:'🥤',p:80,c:7,f:5,fiber:0,group:'蛋白质',unit:'g',basis:100,k:393},
+{name:'糙米饭（熟）',icon:'🍚',p:2.6,c:23,f:0.9,fiber:1.8,group:'碳水',unit:'g',basis:100,k:110.5},
+{name:'藜麦（熟）',icon:'🥣',p:4.4,c:21.3,f:1.9,fiber:2.8,group:'碳水',unit:'g',basis:100,k:119.9},
+{name:'小米粥（熟）',icon:'🥣',p:2.5,c:14,f:0.4,fiber:0.6,group:'碳水',unit:'g',basis:100,k:69.6},
+{name:'玉米（熟）',icon:'🌽',p:3.4,c:21,f:1.5,fiber:2.4,group:'碳水',unit:'g',basis:100,k:111.1},
+{name:'土豆（熟）',icon:'🥔',p:2,c:20,f:0.1,fiber:1.8,group:'碳水',unit:'g',basis:100,k:88.9},
+{name:'紫薯（熟）',icon:'🍠',p:1.5,c:22,f:0.1,fiber:3,group:'碳水',unit:'g',basis:100,k:94.9},
+{name:'南瓜（熟）',icon:'🎃',p:1,c:7,f:0.1,fiber:1.1,group:'碳水',unit:'g',basis:100,k:32.9},
+{name:'荞麦面（熟）',icon:'🍜',p:5,c:21,f:0.1,fiber:1.5,group:'碳水',unit:'g',basis:100,k:104.9},
+{name:'全麦意面（熟）',icon:'🍝',p:5.8,c:26,f:1,fiber:3.9,group:'碳水',unit:'g',basis:100,k:136.2},
+{name:'意面（熟）',icon:'🍝',p:5.8,c:31,f:0.9,fiber:1.8,group:'碳水',unit:'g',basis:100,k:155.3},
+{name:'全麦吐司',icon:'🍞',p:12,c:43,f:4,fiber:7,group:'碳水',unit:'g',basis:100,k:256},
+{name:'贝果',icon:'🥯',p:10,c:53,f:1.5,fiber:2.3,group:'碳水',unit:'g',basis:100,k:265.5},
+{name:'香蕉',icon:'🍌',p:1.1,c:23,f:0.3,fiber:2.6,group:'碳水',unit:'g',basis:100,k:99.1},
+{name:'燕麦麸',icon:'🥣',p:17,c:66,f:7,fiber:15,group:'碳水',unit:'g',basis:100,k:395},
+{name:'米粉（熟）',icon:'🍜',p:1.8,c:24,f:0.2,fiber:0.5,group:'碳水',unit:'g',basis:100,k:105.0},
+{name:'西兰花（生）',icon:'🥦',p:2.8,c:6.6,f:0.4,fiber:2.6,group:'纤维',unit:'g',basis:100,k:41.2},
+{name:'菜花',icon:'🥦',p:1.9,c:5,f:0.3,fiber:2,group:'纤维',unit:'g',basis:100,k:30.3},
+{name:'芦笋',icon:'🥬',p:2.2,c:3.9,f:0.1,fiber:2.1,group:'纤维',unit:'g',basis:100,k:25.3},
+{name:'羽衣甘蓝',icon:'🥬',p:4.3,c:8.8,f:0.9,fiber:3.6,group:'纤维',unit:'g',basis:100,k:60.5},
+{name:'生菜',icon:'🥬',p:1.4,c:2.9,f:0.2,fiber:1.3,group:'纤维',unit:'g',basis:100,k:19.0},
+{name:'上海青',icon:'🥬',p:1.5,c:2.2,f:0.2,fiber:1,group:'纤维',unit:'g',basis:100,k:16.6},
+{name:'黄瓜',icon:'🥒',p:0.7,c:3.6,f:0.1,fiber:0.5,group:'纤维',unit:'g',basis:100,k:18.1},
+{name:'番茄',icon:'🍅',p:0.9,c:3.9,f:0.2,fiber:1.2,group:'纤维',unit:'g',basis:100,k:21.0},
+{name:'胡萝卜',icon:'🥕',p:0.9,c:9.6,f:0.2,fiber:2.8,group:'纤维',unit:'g',basis:100,k:43.8},
+{name:'彩椒',icon:'🫑',p:1,c:6,f:0.3,fiber:2.1,group:'纤维',unit:'g',basis:100,k:30.7},
+{name:'蘑菇',icon:'🍄',p:3.1,c:3.3,f:0.3,fiber:1,group:'纤维',unit:'g',basis:100,k:28.3},
+{name:'西葫芦',icon:'🥒',p:1.2,c:3.1,f:0.3,fiber:1,group:'纤维',unit:'g',basis:100,k:19.9},
+{name:'茄子',icon:'🍆',p:1,c:5.9,f:0.2,fiber:3,group:'纤维',unit:'g',basis:100,k:29.4},
+{name:'四季豆',icon:'🫛',p:1.8,c:7,f:0.2,fiber:3.4,group:'纤维',unit:'g',basis:100,k:37.0},
+{name:'卷心菜',icon:'🥬',p:1.3,c:5.8,f:0.1,fiber:2.5,group:'纤维',unit:'g',basis:100,k:29.3},
+{name:'紫甘蓝',icon:'🥬',p:1.4,c:7.4,f:0.2,fiber:2.1,group:'纤维',unit:'g',basis:100,k:37.0},
+{name:'洋葱',icon:'🧅',p:1.1,c:9.3,f:0.1,fiber:1.7,group:'纤维',unit:'g',basis:100,k:42.5},
+{name:'莲藕',icon:'🪷',p:1.6,c:17,f:0.1,fiber:2.5,group:'纤维',unit:'g',basis:100,k:75.3},
+{name:'海带（泡发）',icon:'🌿',p:1,c:3,f:0.2,fiber:1.3,group:'纤维',unit:'g',basis:100,k:17.8},
+{name:'木耳（泡发）',icon:'🍄',p:1.5,c:6,f:0.2,fiber:2.5,group:'纤维',unit:'g',basis:100,k:31.8},
+{name:'草莓',icon:'🍓',p:0.7,c:7.7,f:0.3,fiber:2,group:'纤维',unit:'g',basis:100,k:36.3},
+{name:'树莓',icon:'🫐',p:1.2,c:12,f:0.7,fiber:6.5,group:'纤维',unit:'g',basis:100,k:59.1},
+{name:'黑莓',icon:'🫐',p:1.4,c:9.6,f:0.5,fiber:5.3,group:'纤维',unit:'g',basis:100,k:48.5},
+{name:'橙子',icon:'🍊',p:0.9,c:11.8,f:0.1,fiber:2.4,group:'纤维',unit:'g',basis:100,k:51.7},
+{name:'猕猴桃',icon:'🥝',p:1.1,c:14.7,f:0.5,fiber:3,group:'纤维',unit:'g',basis:100,k:67.7},
+{name:'梨',icon:'🍐',p:0.4,c:15,f:0.1,fiber:3.1,group:'纤维',unit:'g',basis:100,k:62.5},
+{name:'葡萄',icon:'🍇',p:0.7,c:18,f:0.2,fiber:0.9,group:'纤维',unit:'g',basis:100,k:76.6},
+{name:'西瓜',icon:'🍉',p:0.6,c:7.6,f:0.2,fiber:0.4,group:'纤维',unit:'g',basis:100,k:34.6},
+{name:'哈密瓜',icon:'🍈',p:0.8,c:8.2,f:0.2,fiber:0.9,group:'纤维',unit:'g',basis:100,k:37.8},
+{name:'芒果',icon:'🥭',p:0.8,c:15,f:0.4,fiber:1.6,group:'纤维',unit:'g',basis:100,k:66.8},
+{name:'菠萝',icon:'🍍',p:0.5,c:13,f:0.1,fiber:1.4,group:'纤维',unit:'g',basis:100,k:54.9},
+{name:'桃子',icon:'🍑',p:0.9,c:9.5,f:0.3,fiber:1.5,group:'纤维',unit:'g',basis:100,k:44.3},
+{name:'樱桃',icon:'🍒',p:1.1,c:16,f:0.2,fiber:2.1,group:'纤维',unit:'g',basis:100,k:70.2},
+{name:'核桃',icon:'🌰',p:15,c:14,f:65,fiber:6.7,group:'脂肪',unit:'g',basis:100,k:701},
+{name:'腰果',icon:'🌰',p:18,c:30,f:44,fiber:3.3,group:'脂肪',unit:'g',basis:100,k:588},
+{name:'开心果',icon:'🌰',p:20,c:28,f:45,fiber:10,group:'脂肪',unit:'g',basis:100,k:597},
+{name:'花生',icon:'🥜',p:26,c:16,f:49,fiber:8.5,group:'脂肪',unit:'g',basis:100,k:609},
+{name:'花生酱（无糖）',icon:'🥜',p:25,c:20,f:50,fiber:6,group:'脂肪',unit:'g',basis:100,k:630},
+{name:'奇亚籽',icon:'🌱',p:17,c:42,f:31,fiber:34,group:'脂肪',unit:'g',basis:100,k:515},
+{name:'亚麻籽',icon:'🌱',p:18,c:29,f:42,fiber:27,group:'脂肪',unit:'g',basis:100,k:566},
+{name:'南瓜籽',icon:'🌱',p:30,c:11,f:49,fiber:6,group:'脂肪',unit:'g',basis:100,k:605},
+{name:'葵花籽',icon:'🌻',p:21,c:20,f:51,fiber:8.6,group:'脂肪',unit:'g',basis:100,k:623},
+{name:'芝麻',icon:'🌱',p:18,c:23,f:50,fiber:12,group:'脂肪',unit:'g',basis:100,k:614},
+{name:'芝麻酱',icon:'🥣',p:17,c:22,f:54,fiber:9,group:'脂肪',unit:'g',basis:100,k:642},
+{name:'菜籽油',icon:'🫒',p:0,c:0,f:100,fiber:0,group:'脂肪',unit:'g',basis:100,k:900},
+{name:'牛油果油',icon:'🥑',p:0,c:0,f:100,fiber:0,group:'脂肪',unit:'g',basis:100,k:900},
+{name:'黑巧克力（70%）',icon:'🍫',p:8,c:46,f:43,fiber:11,group:'脂肪',unit:'g',basis:100,k:603}
+].map((x,i)=>({...x,id:'base'+i,unit:x.unit||'g',basis:x.basis||100,k:x.k??Math.round((x.p*4+x.c*4+x.f*9)*10)/10}));
 NUT_FOODS.find(x=>x.name==='鸡蛋').unit='个';
 const egg=NUT_FOODS.find(x=>x.name==='鸡蛋');egg.basis=1;for(const k of ['k','p','c','f','fiber'])egg[k]=Math.round(egg[k]*.5*100)/100;
 let nutMode='strength',nutSelected=null,nutEditing=null;
