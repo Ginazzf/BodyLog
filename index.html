@@ -295,7 +295,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{opacity:0!important;width:
 .calendar-day.hasworkout:active{background:#f1f6fd!important}
 .calendar-tag.golf{background:#eee6fa!important;color:#7550a5!important}
 .calendar-tag.cardio{background:#dcf4e9!important;color:#287c64!important}
-</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.15</span></header>
+</style></head><body><main><header class="head"><div><div class="sub">PERSONAL WEIGHT JOURNAL</div><div class="brand">BODYLOG<span style="color:#7193ca">.</span></div></div><span class="pill">LIGHT / 1.7.16</span></header>
 <section id="home" class="page active"><div class="panel"><div class="sectiontitle">Daily Entry</div><div class="sub">记录体重和今天的运动</div><label>DATE</label><input id="entryDate" type="date"><label id="entryWeightLabel">WEIGHT · KG</label><input id="entryWeight" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 60.7"><textarea id="entryMood" hidden></textarea><label>TODAY'S WORKOUT</label><textarea id="entryWorkout" placeholder="今天练了什么？动作、重量、组数、时长……"></textarea><div class="entry-actions"><button class="outline" id="saveOnly">保存</button><button class="primary" id="saveEntry">生成卡片 →</button></div></div></section>
 <section id="trends" class="page"><div class="panel"><div class="row"><div class="sectiontitle">Weight Trends</div></div><div class="rangebar" id="rangebar"><button data-range="7">7天</button><button data-range="30" class="active">30天</button><button data-range="90">90天</button><button data-range="all">全部</button><button data-range="phase">当前阶段</button></div><div class="grid"><div><label>FROM</label><input id="fromDate" type="date"></div><div><label>TO</label><input id="toDate" type="date"></div></div><p class="sub" style="margin:12px 0 5px">点击曲线上的点，添加旅行或饮食备注</p><div class="row chart-tools" style="justify-content:space-between;align-items:center"><label class="chart-toggle"><input id="hideYAxis" type="checkbox"> 隐藏体重刻度</label><button id="exportTrend" class="outline" type="button">生成图片 ↗</button></div><div id="chartWrap"><svg class="chart" id="chart" viewBox="0 0 350 270"></svg></div><div class="grid"><div class="metric"><span class="muted">区间变化</span><strong id="periodChange">—</strong></div><div class="metric"><span class="muted">区间记录</span><strong id="periodRecords">—</strong></div></div></div><div id="historicalPhaseList"></div>
 <div class="panel"><div class="row"><div class="sectiontitle" id="phaseHeading">Current Phase</div><span class="phase-badge ongoing">正在进行</span></div><div class="sub" id="phaseDates">在设置中创建当前阶段</div><div class="grid" style="margin:14px 0"><div class="metric"><span class="muted">阶段变化</span><strong id="phaseChange">—</strong></div><div class="metric"><span class="muted">距离目标</span><strong id="goalRemain">—</strong></div></div><div class="statline"><div id="progressBar" style="width:0"></div></div><p class="muted" id="phaseProgress">设置目标后显示进度</p></div>
@@ -863,13 +863,25 @@ $('exportTrend').onclick=()=>{
    };
    const waistDelta=p=>{const a=Number(p.waistStart),b=Number(p.waistEnd);return a>0&&b>0?(b-a>0?'+':'')+(b-a).toFixed(1)+' cm':'—'};
    const phaseDuration=p=>{const from=p.start,to=(p.end&&p.end<TODAY?p.end:TODAY);if(!validDate(from)||!validDate(to)||to<from)return '—';const days=Math.round((new Date(to+'T12:00:00')-new Date(from+'T12:00:00'))/86400000)+1;return days+' 天';};
-   const phaseWeightDelta=p=>{const all=sorted().filter(w=>w.date>=p.start&&w.date<=(p.end||TODAY));if(all.length<2)return '—';const delta=displayWeight(Number(all.at(-1).weight)-Number(all[0].weight));return (delta>0?'+':'')+delta.toFixed(1)+' '+unit();};
+   const allWeights=sorted().filter(w=>Number.isFinite(Number(w.weight))&&w.weight!==''&&w.weight!=null);
+   const phaseWeights=p=>allWeights.filter(w=>w.date>=p.start&&w.date<=((p.end&&p.end<TODAY)?p.end:TODAY));
+   const weightDiff=(a,b)=>{if(!a||!b)return '—';const d=displayWeight(Number(a.weight)-Number(b.weight));return (d>0?'+':'')+d.toFixed(1)+' '+unit();};
+   const phaseWeightDelta=p=>{const list=phaseWeights(p);return list.length?weightDiff(list.at(-1),list[0]):'—';};
+   const crossPhaseDelta=p=>{
+    const list=phaseWeights(p);if(!list.length)return '—';
+    const i=phases.indexOf(p);
+    if(i<=0)return weightDiff(list.at(-1),list[0]);
+    const previous=phases[i-1];
+    const previousWeights=phaseWeights(previous);
+    return previousWeights.length?weightDiff(list.at(-1),previousWeights.at(-1)):'—';
+   };
    const rows=[
     ['阶段名称',...visiblePhases.map(p=>phaseNameAndAdvice(p).name.split(' · ').at(-1))],
     ['减重方式',...visiblePhases.map(p=>p.method||'—')],
     ['区间记录',...visiblePhases.map(phaseDuration)],
-    ['体重变化',...visiblePhases.map(phaseWeightDelta)],
-    ['腰围变化',...visiblePhases.map(waistDelta)],
+    ['体重跨期变化',...visiblePhases.map(crossPhaseDelta)],
+    ['体重阶段变化',...visiblePhases.map(phaseWeightDelta)],
+    ['腰围阶段变化',...visiblePhases.map(waistDelta)],
     ['阶段分析',...visiblePhases.map(p=>phaseNameAndAdvice(p).advice)]
    ];
    if(!visiblePhases.length){rows.splice(0,rows.length,['阶段说明','选中日期内没有对应的阶段']);}
